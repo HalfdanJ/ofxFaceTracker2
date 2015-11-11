@@ -19,20 +19,20 @@ void ofApp::draw(){
     // Draw the grabber
     grabber.draw(0,0);
     
-    for(int i=0;i<tracker.numFaces();i++){
+    for(int i=0;i<tracker.size();i++){
         
         // Draw debug pose
         tracker.drawPose(i);
         
         // Apply the pose matrix
         ofPushView();
-        ofPushMatrix();
         tracker.applyPoseMatrix(i);
         
         // Draw sphere (0,0,0) is forehead
         ofDrawSphere(0, 0, 150, 20);
         
-        ofPopMatrix();
         ofPopView();
     }
+    
+    ofDrawBitmapString("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
 }

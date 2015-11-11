@@ -41,8 +41,8 @@ public:
     
 	//virtual void reset();
 	
+    /// Get number of detected faces
 	int size() const;
-    int numFaces()const;
     
     int getThreadFps()const;
     //bool getFound() const;
@@ -155,7 +155,7 @@ protected:
 	double rescale, landmarkRescale;
     int w, h;
     
-    int _numFaces;
+    int numFaces;
 /*	int frameSkip;
 	
 	vector<int> wSize1, wSize2;
