@@ -16,6 +16,7 @@
 #pragma once
 
 #include "ofxCv.h"
+//#include "ofxDelaunay.h"
 
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/generic_image.h>
@@ -23,14 +24,21 @@
 #include <dlib/serialize.h>
 #include <dlib/opencv.h>
 
+#define MAX_FACES 20
+
+
 class ofxFaceTracker2 : public ofThread {
 public:
 	ofxFaceTracker2();
     ~ofxFaceTracker2();
 	void setup();
-	virtual bool update(cv::Mat image);
-	void draw(int x=0, int y=0) const;
-    void draw(int x, int y, int w, int h) const;
+    
+	bool update(cv::Mat image);
+    void draw(int x=0, int y=0, int w=-1, int h=-1) const;
+    void drawPose();
+    
+    void stop();
+    
 	//virtual void reset();
 	
 	int size() const;
@@ -44,18 +52,19 @@ public:
 	virtual bool getVisibility(int i) const;*/
     
 	vector<ofVec2f> getImagePoints(int face=0) const;
-	/*vector<ofVec3f> getObjectPoints() const;
+    vector<cv::Point2f> getCvImagePoints(int face=0) const;
+/*vector<ofVec3f> getObjectPoints() const;
 	vector<ofVec3f> getMeanObjectPoints() const;
 	*/
 	virtual ofVec2f getImagePoint(int i, int face=0) const;
 	/*virtual ofVec3f getObjectPoint(int i) const;
 	virtual ofVec3f getMeanObjectPoint(int i) const;
-	
+	*/
 	ofMesh getImageMesh() const;
-	ofMesh getObjectMesh() const;
-	ofMesh getMeanObjectMesh() const;
+	/*ofMesh getObjectMesh() const;
+	ofMesh getMeanObjectMesh() const;*/
 	template <class T> ofMesh getMesh(vector<T> points) const;
-	
+	/*
 	virtual const cv::Mat& getObjectPointsMat() const;
 	
 	virtual ofRectangle getHaarRectangle() const;
@@ -94,6 +103,11 @@ public:
 	};
 	float getGesture(Gesture gesture) const;
 	*/
+    
+    ofVec3f transformPosePosition(ofVec3f p, int face=0);
+    void applyPoseMatrix(int face=0);
+
+    
 	void setRescale(float rescale);
     void setLandmarkRescale(float rescale);
     void setRotation(int rotation);
@@ -105,6 +119,13 @@ public:
 	void setHaarMinSize(float minSize);
 	*/
 protected:
+    void calculatePoseMatrix(int face=0);
+    bool poseCalculated[MAX_FACES];
+    cv::Mat1d poseProjection[MAX_FACES];
+    ofxCv::Intrinsics intrinsics[MAX_FACES];
+    cv::Mat poservec[MAX_FACES];
+    cv::Mat posetvec[MAX_FACES];
+    
     static vector<int> getFeatureIndices(Feature feature);
     static std::vector<int> consecutive(int start, int end);
     
@@ -121,9 +142,10 @@ protected:
     std::vector<dlib::rectangle> facesRects;
     std::vector< dlib::full_object_detection > facesObjects;
     
-/*	void updateObjectPoints();
-	void addTriangleIndices(ofMesh& mesh) const;*/
-	template <class T> ofPolyline getFeature(Feature feature, vector<T> points) const;
+//	void addTriangleIndices(ofMesh& mesh) const;
+    template <class T> ofPolyline getFeature(Feature feature, vector<T> points) const;
+    
+    void exitEvent(ofEventArgs& e);
     
 	bool failed;
     int rotation;
@@ -175,18 +197,4 @@ ofPolyline ofxFaceTracker2::getFeature(Feature feature, vector<T> points) const 
 	}
 	return polyline;
 }
-/*
-template <class T>
-ofMesh ofxFaceTracker::getMesh(vector<T> points) const {
-	ofMesh mesh;
-	mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-	if(!failed) {
-		int n = size();
-		for(int i = 0; i < n; i++) {
-			mesh.addVertex(points[i]);
-			mesh.addTexCoord(getImagePoint(i));
-		}
-		addTriangleIndices(mesh);
-	}
-	return mesh;
-}*/
+
