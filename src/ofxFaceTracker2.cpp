@@ -14,20 +14,28 @@ ofxFaceTracker2::ofxFaceTracker2()
 ,failed(true)
 ,threaded(true)
 ,rotation(0)
+,_numFaces(0)
 {
 }
 
 ofxFaceTracker2::~ofxFaceTracker2(){
     if(isThreadRunning()) {
-        ofLog(OF_LOG_ERROR, "ofxFaceTrackerThreaded :: Thread was not stopped. You must call the trackers waitForThread() in ofApp::exit() or exit() of class that holds this object.");
+        ofLogError()<<"ofxFaceTrackerThreaded :: Tracker was not stopped. You must call the trackers stop() before destroying the tracker object.";
     }
 }
 
 void ofxFaceTracker2::setup() {
+#ifndef __OPTIMIZE__
+    ofLogWarning()<<"ofxFaceTracker2: Warning, the facetracker background thread runs very slowly in debug mode!";
+#endif
+    
+    // Add listener for app exit
     ofAddListener(ofEvents().exit, this, &ofxFaceTracker2::exitEvent);
     
+    // Get DLIB's frontal face detector
     detector = dlib::get_frontal_face_detector();
     
+    // Load landmark data file
     ofFile dataFile = ofFile("shape_predictor_68_face_landmarks.dat");
     if(dataFile.exists()){
         dlib::deserialize(dataFile.path()) >> sp;
@@ -35,17 +43,19 @@ void ofxFaceTracker2::setup() {
         throw std::runtime_error("\n\nofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found in bin/data. \n\nPlease download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
     }
     
-    fps = thread_fps = 0;
+    thread_fps = 0;
     
+    // Start the background thread
     if(threaded){
         startThread(false);
     }
 }
 
-
 void ofxFaceTracker2::stop(){
-    waitForThread();
-    stopThread();
+    if(isThreadRunning()){
+        waitForThread();
+        stopThread();
+    }
 }
 
 bool ofxFaceTracker2::update(Mat image) {
@@ -75,8 +85,6 @@ bool ofxFaceTracker2::update(Mat image) {
 	}
     imageDirty = true;
     
-//    dlib::cv_image<dlib::rgb_pixel> cvimg(im);
-
     dlib::cv_image<unsigned char> cvimg(gray);
     if(!threaded){
         facesRects = detector(cvimg);
@@ -84,10 +92,11 @@ bool ofxFaceTracker2::update(Mat image) {
     
     if(facesRects.size() == 0){
         failed = true;
+        _numFaces = 0;
     } else {
+        facesObjects.clear();
         failed = false;
         
-        facesObjects.clear();
         for (unsigned long j = 0; j < facesRects.size(); ++j)
         {
             dlib::full_object_detection shape = sp(cvimg, facesRects[j]);
@@ -97,25 +106,14 @@ bool ofxFaceTracker2::update(Mat image) {
         for(int i=0;i<MAX_FACES;i++){
             poseCalculated[i] = false;
         }
+        
+        _numFaces = facesRects.size();
     }
     
     if(threaded){
         mutex.unlock();
     }
 
-    clock_t end = clock() ;
-    double elapsed_time = (end-start)/(double)CLOCKS_PER_SEC ;
-    fps = 1.0/elapsed_time;
-    
-    /*
-    frames_one_sec++;
-    if( ofGetElapsedTimeMillis() - one_second_time >= 1000){
-        fps = frames_one_sec;
-        thread_fps = thread_frames_one_sec;
-        frames_one_sec = thread_frames_one_sec = 0;
-        one_second_time = ofGetElapsedTimeMillis();
-    }*/
-    
     return !failed;
 }
 
@@ -234,13 +232,13 @@ void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
     
 }
 
-void ofxFaceTracker2::drawPose() {
-    if(failed) return;
+void ofxFaceTracker2::drawPose(int face) {
+    if(numFaces() <= face) return;
     
     ofPushView();
     ofPushStyle();
     ofPushMatrix();
-    applyPoseMatrix();
+    applyPoseMatrix(face);
     
     ofSetColor(255,0,0);
     ofDrawLine(0,0,0, 100,0,0);
@@ -266,9 +264,6 @@ void ofxFaceTracker2::setLandmarkRescale(float rescale){
     this->landmarkRescale = rescale;
 }
 
-int ofxFaceTracker2::getFps()const{
-    return fps;
-}
 int ofxFaceTracker2::getThreadFps()const{
     return thread_fps;
 }
@@ -280,11 +275,11 @@ int ofxFaceTracker2::size() const {
 }
 
 int ofxFaceTracker2::numFaces()const{
-    return facesRects.size();
+    return _numFaces;
 }
 
 ofVec2f ofxFaceTracker2::getImagePoint(int i, int face) const {
-    if(failed) {
+    if(numFaces() <= face) {
         return ofVec2f();
     }
     
@@ -416,7 +411,7 @@ ofVec3f ofxFaceTracker2::transformPosePosition(ofVec3f p, int face){
 }
 
 void ofxFaceTracker2::applyPoseMatrix(int face){
-    if(failed) return;
+    if(numFaces() <= face) return;
     
     if(!poseCalculated[face]){
         calculatePoseMatrix(face);

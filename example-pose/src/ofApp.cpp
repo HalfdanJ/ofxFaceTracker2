@@ -19,17 +19,20 @@ void ofApp::draw(){
     // Draw the grabber
     grabber.draw(0,0);
     
-    // Draw debug pose
-    tracker.drawPose();
-    
-    // Apply the pose matrix
-    ofPushView();
-    ofPushMatrix();
-    tracker.applyPoseMatrix();
-    
-    // Draw sphere (0,0,0) is forehead
-    ofDrawSphere(0, 0, 150, 20);
-    
-    ofPopMatrix();
-    ofPopView();
+    for(int i=0;i<tracker.numFaces();i++){
+        
+        // Draw debug pose
+        tracker.drawPose(i);
+        
+        // Apply the pose matrix
+        ofPushView();
+        ofPushMatrix();
+        tracker.applyPoseMatrix(i);
+        
+        // Draw sphere (0,0,0) is forehead
+        ofDrawSphere(0, 0, 150, 20);
+        
+        ofPopMatrix();
+        ofPopView();
+    }
 }

@@ -35,7 +35,7 @@ public:
     
 	bool update(cv::Mat image);
     void draw(int x=0, int y=0, int w=-1, int h=-1) const;
-    void drawPose();
+    void drawPose(int face=0);
     
     void stop();
     
@@ -44,7 +44,6 @@ public:
 	int size() const;
     int numFaces()const;
     
-    int getFps()const;
     int getThreadFps()const;
     //bool getFound() const;
 	/*bool getHaarFound() const;
@@ -155,6 +154,8 @@ protected:
 	bool fcheck;*/
 	double rescale, landmarkRescale;
     int w, h;
+    
+    int _numFaces;
 /*	int frameSkip;
 	
 	vector<int> wSize1, wSize2;
@@ -171,7 +172,7 @@ protected:
 /*	cv::Mat objectPoints;
      */
     
-    int fps, thread_fps;
+    int thread_fps;
 
 };
 
