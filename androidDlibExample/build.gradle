@@ -48,7 +48,7 @@ android {
         }
     }
     aaptOptions {
-        ignoreAssetsPattern '___shape_predictor_68_face_landmarks.dat'
+        ignoreAssetsPattern 'shape_predictor_68_face_landmarks.dat'
     }
 }
 

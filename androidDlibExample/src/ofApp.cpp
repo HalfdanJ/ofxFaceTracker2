@@ -22,6 +22,8 @@ void ofApp::setup(){
 	//ofSetOrientation(OF_ORIENTATION_DEFAULT);
 
 	ofBackground(0);
+	ofEnableAlphaBlending();
+	//ofxAndroidSensors::enable();
 }
 
 //--------------------------------------------------------------
@@ -32,6 +34,9 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	//ofxAndroidSensors::update();
+    //rotation = ofxAndroidSensors::getWorldRotation();
+
 	grabber.update();
 	if(grabber.isFrameNew()) {
 		int o = (appOrientation+cameraOrientation)%360;
@@ -45,9 +50,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	ofSetColor(255,255,255);
 
-	/*grabber.draw(0,0);
-
-*/
+	ofDisableDepthTest();
 
 	// Calculate aspect ratio of grabber image
 	float grabberAspectRatio = grabber.getWidth() / grabber.getHeight();
@@ -79,6 +82,8 @@ void ofApp::draw(){
 		std::swap(width, height);
 	}
 
+	ofSetColor(255/**abs(rotation.z)*/);
+
 	// Draw the image
 	if(width < height) {
 		grabber.draw(0,0, width * grabberAspectRatio,
@@ -98,29 +103,53 @@ void ofApp::draw(){
 	// Draw from the center of the window
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 
+
 	// Draw the image
+	ofEnableAlphaBlending();
 	if(ofGetWidth() < ofGetHeight()) {
-		tracker.draw(0,0, ofGetWidth() , ofGetWidth()* grabberAspectRatio);
+		float scale = ofGetWidth() / grabber.getHeight();
+		ofScale(scale,scale);
+		ofSetLineWidth(4);
+
+		ofSetColor(255,255*(1-abs(rotation.z)));
+		tracker.draw(0,0);
+		tracker.drawPose(0,0);
+
+		ofSetLineWidth(2);
+
+		ofSetColor(255,255*(abs(rotation.z)));
+		ofTranslate(-grabber.getHeight()/2, -grabber.getWidth()/2);
+		tracker.getImageMesh().drawWireframe();
 
 	} else {
+		float scale = ofGetHeight() / grabber.getHeight();
+		ofScale(scale,scale);
+		ofSetColor(255,255*(1-abs(rotation.z)));
+		ofSetLineWidth(4);
+
 		tracker.draw(0,0, ofGetHeight() * grabberAspectRatio,
 					 ofGetHeight());
 
+		tracker.drawPose(0,0, ofGetHeight() * grabberAspectRatio,
+					 ofGetHeight());
+
+
+
+		ofSetLineWidth(2);
+
+		ofSetColor(255,255*(abs(rotation.z)));
+		ofTranslate(-grabber.getWidth()/2, -grabber.getHeight()/2);
+		tracker.getImageMesh().drawWireframe();
+
 	}
 
-
+	ofSetLineWidth(1);
 
 	ofPopMatrix();
 
-
 	ofSetRectMode(OF_RECTMODE_CORNER);
-
-
 	ofDrawBitmapString("app fps: " + ofToString(ofGetFrameRate()),20,40);
 	ofDrawBitmapString("thread fps: " + ofToString(tracker.getThreadFps()),20,60);
-
-
-
 }
 
 void ofApp::deviceOrientationChanged(ofOrientation newOrientation){

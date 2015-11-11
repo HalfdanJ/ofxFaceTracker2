@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxAndroid.h"
+#include "ofxAndroidSensors.h"
 
 #include "ofxFaceTracker2.h"
 using namespace std;
@@ -35,6 +36,7 @@ class ofApp : public ofxAndroidApp, public ofThread{
 	int cameraOrientation;
 	int appOrientation;
 
+ofVec3f rotation;
 
 	void pause();
 		void stop();
