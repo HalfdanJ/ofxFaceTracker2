@@ -122,9 +122,11 @@ public:
     /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
     /// Can be a lot higher then the face detector
     /// Default is -1, that means no resizing happens (use native resolution from input image)
-    void setLandmarkDectorImageSize(int numPixels);
+    void setLandmarkDetectorImageSize(int numPixels);
     
-    void setRotation(int rotation);
+    // Set the orienation of the faces. Usefull on mobile where the camera is rotated
+    void setFaceOrientation(ofOrientation orientation);
+    
 /*	void setIterations(int iterations);
 	void setClamp(float clamp);
 	void setTolerance(float tolerance);
@@ -170,6 +172,8 @@ protected:
     int inputWidth, inputHeight;
     
     int numFaces;
+    
+    ofMatrix4x4 landmarkRotationMatrix;
 /*	int frameSkip;
 	
 	vector<int> wSize1, wSize2;

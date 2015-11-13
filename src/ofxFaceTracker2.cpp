@@ -76,7 +76,7 @@ bool ofxFaceTracker2::update(Mat image) {
 
     float aspect = (float)inputHeight/inputWidth;
 
-	if(landmarkDetectorImageSize == -1 || inputWidth*inputHeight <= landmarkDetectorImageSize) {
+	if(landmarkDetectorImageSize == -1 || inputWidth*inputHeight <= landmarkDetectorImageSize) {
 		im = image;
 	} else {
         float scale = sqrt((float) landmarkDetectorImageSize / (inputHeight*inputWidth));
@@ -87,6 +87,26 @@ bool ofxFaceTracker2::update(Mat image) {
         rotate_90n(im, im, imageRotation);
     }
 
+    if(imageRotation == 90){
+        landmarkRotationMatrix.makeIdentityMatrix();
+        landmarkRotationMatrix.translate(-im.cols,0,0);
+        landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
+        landmarkRotationMatrix.rotate(-90, 0,0,1);
+    } else if(imageRotation == 270){
+        landmarkRotationMatrix.makeIdentityMatrix();
+        landmarkRotationMatrix.translate(0,-im.rows,0);
+        landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
+        landmarkRotationMatrix.rotate(90, 0,0,1);
+    } else if(imageRotation == 180){
+        landmarkRotationMatrix.makeIdentityMatrix();
+        landmarkRotationMatrix.translate(-im.cols,-im.rows,0);
+        landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
+        landmarkRotationMatrix.rotate(180, 0,0,1);
+    } else {
+        landmarkRotationMatrix.makeIdentityMatrix();
+        landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
+    }
+    
     if(threaded){
         mutex.lock();
     }
@@ -247,15 +267,15 @@ void ofxFaceTracker2::drawPose(int face) {
     ofPopView();
 }
 
-void ofxFaceTracker2::setRotation(int rotation){
-    this->imageRotation = rotation;
+void ofxFaceTracker2::setFaceOrientation(ofOrientation orientation){
+    this->imageRotation = ofOrientationToDegrees(orientation);
 }
 
 void ofxFaceTracker2::setFaceDetectorImageSize(int numPixels) {
     this->faceDetectorImageSize = numPixels;
 }
 
-void ofxFaceTracker2::setLandmarkDectorImageSize(int numPixels){
+void ofxFaceTracker2::setLandmarkDetectorImageSize(int numPixels){
     this->landmarkDetectorImageSize = numPixels;
 }
 
@@ -272,8 +292,11 @@ ofVec2f ofxFaceTracker2::getImagePoint(int i, int face) const {
         return ofVec2f();
     }
     
-    return ofVec2f(facesObjects[face].part(i).x() * ((float)inputWidth / im.cols),
-                   facesObjects[face].part(i).y() * ((float)inputHeight / im.rows));
+    ofVec3f p = ofVec3f(facesObjects[face].part(i).x(),
+                   facesObjects[face].part(i).y(),0);
+    p = p * landmarkRotationMatrix;
+    
+    return ofVec2f(p);
 }
 
 vector<ofVec2f> ofxFaceTracker2::getImagePoints(int face) const {

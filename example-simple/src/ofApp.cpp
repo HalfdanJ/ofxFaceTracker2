@@ -18,7 +18,7 @@ void ofApp::update(){
 void ofApp::draw(){
     grabber.draw(0, 0);
     tracker.draw();
-    tracker.drawPos();
+    tracker.drawPose();
     
     ofDrawBitmapString("Framerate : "+ofToString(ofGetFrameRate()), 10, 20);
     ofDrawBitmapString("Tracker thread framerate : "+ofToString(tracker.getThreadFps()), 10, 40);
