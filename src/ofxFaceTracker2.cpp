@@ -271,6 +271,10 @@ void ofxFaceTracker2::setFaceOrientation(ofOrientation orientation){
     this->imageRotation = ofOrientationToDegrees(orientation);
 }
 
+void ofxFaceTracker2::setFaceRotation(float rotation){
+    this->imageRotation = rotation;
+}
+
 void ofxFaceTracker2::setFaceDetectorImageSize(int numPixels) {
     this->faceDetectorImageSize = numPixels;
 }

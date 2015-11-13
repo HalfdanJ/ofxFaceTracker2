@@ -2,9 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxAndroid.h"
-#include "ofxAndroidSensors.h"
-
 #include "ofxFaceTracker2.h"
+
 using namespace std;
 
 class ofApp : public ofxAndroidApp, public ofThread{
@@ -29,14 +28,15 @@ class ofApp : public ofxAndroidApp, public ofThread{
 	void deviceOrientationChanged(ofOrientation newOrientation);
 
 	ofVideoGrabber grabber;
-
 	ofxFaceTracker2 tracker;
+
+	ofFbo fbo;
 
 	bool cameraFacingFront;
 	int cameraOrientation;
 	int appOrientation;
 
-ofVec3f rotation;
+	ofVec3f rotation;
 
 	void pause();
 		void stop();

@@ -5,44 +5,45 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+	// Select front camera
 	grabber.setDeviceID(1);
+
+	// Make sure its running in mono pixels mode for pixels (much faster)
 	grabber.setPixelFormat(OF_PIXELS_MONO);
 
+	// High res camera, yeah
 	grabber.setup(640,480);
-
-	tracker.setRescale(0.25);
-	tracker.setLandmarkRescale(1.0);
 	tracker.setup();
 
 	// Get the orientation and facing of the current camera
 	cameraOrientation = ((ofxAndroidVideoGrabber*)grabber.getGrabber().get())->getCameraOrientation();
 	cameraFacingFront = ((ofxAndroidVideoGrabber*)grabber.getGrabber().get())->getFacingOfCamera();
 
-	//ofSetOrientation(OF_ORIENTATION_DEFAULT);
-
 	ofBackground(0);
 	ofEnableAlphaBlending();
-	//ofxAndroidSensors::enable();
+
+	fbo.allocate(grabber.getWidth(), grabber.getHeight());
 }
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-	tracker.waitForThread();
-	tracker.stopThread();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	//ofxAndroidSensors::update();
-    //rotation = ofxAndroidSensors::getWorldRotation();
-
 	grabber.update();
 	if(grabber.isFrameNew()) {
 		int o = (appOrientation+cameraOrientation)%360;
-		//ofLog()<<"Orientation "<<o;
-		tracker.setRotation(o);
-		tracker.update(ofxCv::toCv(grabber));
+		ofLog()<<"Orientation "<<o;
+		tracker.setFaceRotation(o);
+		tracker.update(grabber);
+
+		fbo.begin();
+
+		grabber.draw(0,0);
+		tracker.draw();
+		tracker.drawPose();
+		fbo.end();
 	}
 }
 
@@ -63,14 +64,8 @@ void ofApp::draw(){
 	// Draw from the center of the window
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 
-	if(cameraFacingFront) {
-		// If the camera is front, then rotate clockwise
-		ofRotate(appOrientation);
-	} else {
-		// If the camera is backfacing, then rotate counter clockwise
-		ofRotate(-appOrientation);
-	}
-
+	// If the camera is front, then rotate clockwise
+	ofRotate(appOrientation);
 	// Rotate the cameras orientation offset
 	ofRotate(cameraOrientation);
 
@@ -82,67 +77,14 @@ void ofApp::draw(){
 		std::swap(width, height);
 	}
 
-	ofSetColor(255/**abs(rotation.z)*/);
-
 	// Draw the image
 	if(width < height) {
-		grabber.draw(0,0, width * grabberAspectRatio,
+		fbo.draw(0,0, width * grabberAspectRatio,
 					 width);
-
 	} else {
-		grabber.draw(0,0, height,
+		fbo.draw(0,0, height,
 					 height * 1.0/grabberAspectRatio);
-
-
 	}
-
-	ofPopMatrix();
-
-	ofPushMatrix();
-
-	// Draw from the center of the window
-	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-
-
-	// Draw the image
-	ofEnableAlphaBlending();
-	if(ofGetWidth() < ofGetHeight()) {
-		float scale = ofGetWidth() / grabber.getHeight();
-		ofScale(scale,scale);
-		ofSetLineWidth(4);
-
-		ofSetColor(255,255*(1-abs(rotation.z)));
-		tracker.draw(0,0);
-		tracker.drawPose();
-
-		ofSetLineWidth(2);
-
-		ofSetColor(255,255*(abs(rotation.z)));
-		ofTranslate(-grabber.getHeight()/2, -grabber.getWidth()/2);
-		tracker.getImageMesh().drawWireframe();
-
-	} else {
-		float scale = ofGetHeight() / grabber.getHeight();
-		ofScale(scale,scale);
-		ofSetColor(255,255*(1-abs(rotation.z)));
-		ofSetLineWidth(4);
-
-		tracker.draw(0,0, ofGetHeight() * grabberAspectRatio,
-					 ofGetHeight());
-
-		tracker.drawPose();
-
-
-
-		ofSetLineWidth(2);
-
-		ofSetColor(255,255*(abs(rotation.z)));
-		ofTranslate(-grabber.getWidth()/2, -grabber.getHeight()/2);
-		tracker.getImageMesh().drawWireframe();
-
-	}
-
-	ofSetLineWidth(1);
 
 	ofPopMatrix();
 

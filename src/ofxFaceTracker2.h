@@ -126,6 +126,9 @@ public:
     
     // Set the orienation of the faces. Usefull on mobile where the camera is rotated
     void setFaceOrientation(ofOrientation orientation);
+
+    // Set the rotation in degrees of the faces. Usefull on mobile where the camera is rotated
+    void setFaceRotation(float rotation);
     
 /*	void setIterations(int iterations);
 	void setClamp(float clamp);
