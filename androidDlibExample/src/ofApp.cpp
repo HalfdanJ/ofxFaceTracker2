@@ -113,7 +113,7 @@ void ofApp::draw(){
 
 		ofSetColor(255,255*(1-abs(rotation.z)));
 		tracker.draw(0,0);
-		tracker.drawPose(0,0);
+		tracker.drawPose();
 
 		ofSetLineWidth(2);
 
@@ -130,8 +130,7 @@ void ofApp::draw(){
 		tracker.draw(0,0, ofGetHeight() * grabberAspectRatio,
 					 ofGetHeight());
 
-		tracker.drawPose(0,0, ofGetHeight() * grabberAspectRatio,
-					 ofGetHeight());
+		tracker.drawPose();
 
 
 

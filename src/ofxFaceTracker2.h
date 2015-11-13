@@ -34,6 +34,12 @@ public:
 	void setup();
     
 	bool update(cv::Mat image);
+
+    template <class T>
+    bool update(T& image){
+        update(ofxCv::toCv(image));
+    }
+    
     void draw(int x=0, int y=0, int w=-1, int h=-1) const;
     void drawPose(int face=0);
     
@@ -103,12 +109,21 @@ public:
 	float getGesture(Gesture gesture) const;
 	*/
     
-    ofVec3f transformPosePosition(ofVec3f p, int face=0);
+    ofNode getPoseNode(int face=0);
+    ofVec2f transformPosePosition(ofVec3f p, int face=0);
     void applyPoseMatrix(int face=0);
 
+    /// Set the image size the facedetector should work on.
+    /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
+    /// This is the slowest algorithm, and should be set quite low.
+	void setFaceDetectorImageSize(int numPixels);
     
-	void setRescale(float rescale);
-    void setLandmarkRescale(float rescale);
+    /// Set the image size of the landmark detector.
+    /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
+    /// Can be a lot higher then the face detector
+    /// Default is -1, that means no resizing happens (use native resolution from input image)
+    void setLandmarkDectorImageSize(int numPixels);
+    
     void setRotation(int rotation);
 /*	void setIterations(int iterations);
 	void setClamp(float clamp);
@@ -147,13 +162,12 @@ protected:
     void exitEvent(ofEventArgs& e);
     
 	bool failed;
-    int rotation;
-	/*int age;
-	int currentView;
-	
-	bool fcheck;*/
-	double rescale, landmarkRescale;
-    int w, h;
+
+    int imageRotation;
+
+    int faceDetectorImageSize;
+    int landmarkDetectorImageSize;
+    int inputWidth, inputHeight;
     
     int numFaces;
 /*	int frameSkip;

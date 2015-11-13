@@ -9,12 +9,18 @@ using namespace cv;
 
 
 ofxFaceTracker2::ofxFaceTracker2()
-:rescale(0.5)
-,landmarkRescale(1)
-,failed(true)
+:failed(true)
 ,threaded(true)
-,rotation(0)
+,imageRotation(0)
 ,numFaces(0)
+,landmarkDetectorImageSize(-1)
+
+#ifdef TARGET_ANDROID
+,faceDetectorImageSize(160*120)
+#else
+,faceDetectorImageSize(480*360)
+#endif
+
 {
 }
 
@@ -34,8 +40,9 @@ void ofxFaceTracker2::setup() {
     if(dataFile.exists()){
         dlib::deserialize(dataFile.path()) >> sp;
     } else {
-        throw std::runtime_error("\n\n\
-                                 ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found in bin/data. \n\n\
+        throw std::runtime_error("\
+                                 ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found in bin/data.\
+                                 \
                                  Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
     }
     
@@ -63,19 +70,22 @@ void ofxFaceTracker2::stop(){
 
 bool ofxFaceTracker2::update(Mat image) {
     clock_t start = clock() ;
+    
+    inputWidth = image.cols;
+    inputHeight = image.rows;
 
-	if(rescale == 1) {
+    float aspect = (float)inputHeight/inputWidth;
+
+	if(landmarkDetectorImageSize == -1 || inputWidth*inputHeight <= landmarkDetectorImageSize) {
 		im = image;
 	} else {
-		resize(image, im, cv::Size(landmarkRescale * image.cols, landmarkRescale * image.rows));
+        float scale = sqrt((float) landmarkDetectorImageSize / (inputHeight*inputWidth));
+        resize(image, im, cv::Size(), scale,scale, cv::INTER_NEAREST);
 	}
     
-    if(rotation){
-        rotate_90n(im, im, rotation);
+    if(imageRotation){
+        rotate_90n(im, im, imageRotation);
     }
-    
-    w = im.cols;
-    h = im.rows;
 
     if(threaded){
         mutex.lock();
@@ -84,7 +94,8 @@ bool ofxFaceTracker2::update(Mat image) {
 	if(im.type() == CV_8UC3) {
 		cvtColor(im, gray, CV_RGB2GRAY);
 	} else if(im.type() == CV_8UC1) {
-		im.copyTo(gray);
+	//	im.copyTo(gray);
+        gray = im;
 	}
     imageDirty = true;
     
@@ -120,38 +131,21 @@ bool ofxFaceTracker2::update(Mat image) {
     return !failed;
 }
 
-void ofxFaceTracker2::rotate_90n(cv::Mat &src, cv::Mat &dst, int angle)
-{
-    //dst.create(src.rows, src.cols, src.type());
-    if(angle == 270 || angle == -90){
-        // Rotate clockwise 270 degrees
-        cv::flip(src.t(), dst, 0);
-    }else if(angle == 180 || angle == -180){
-        // Rotate clockwise 180 degrees
-        cv::flip(src, dst, -1);
-    }else if(angle == 90 || angle == -270){
-        // Rotate clockwise 90 degrees
-        cv::flip(src.t(), dst, 1);
-    }else if(angle == 360 || angle == 0){
-        if(src.data != dst.data){
-            src.copyTo(dst);
-        }
-    }
-}
 
 void ofxFaceTracker2::threadedFunction(){
     while(isThreadRunning()) {
         if(imageDirty){
             clock_t start = clock() ;
 
-            double s = landmarkRescale / rescale;
-
             imageDirty = false;
+            
             mutex.lock();
-            if(s == 1){
+            float scale = 1;
+            if(gray.cols*gray.rows <= faceDetectorImageSize){
                 gray.copyTo(threadGray);
             } else {
-                resize(gray, threadGray, cv::Size(1.0/s * gray.cols, 1.0/s * gray.rows));
+                scale = sqrt((float) faceDetectorImageSize / (gray.cols*gray.rows));
+                resize(gray, threadGray, cv::Size(), scale, scale, cv::INTER_NEAREST);
             }
             
             
@@ -159,6 +153,8 @@ void ofxFaceTracker2::threadedFunction(){
             
             dlib::cv_image<unsigned char> cvimg(threadGray);
             std::vector<dlib::rectangle> _dets = detector(cvimg);
+            
+            float s = 1.0/scale;
             
             mutex.lock();
             if(s != 1){
@@ -177,8 +173,6 @@ void ofxFaceTracker2::threadedFunction(){
             clock_t end = clock() ;
             double elapsed_time = (end-start)/(double)CLOCKS_PER_SEC ;
             thread_fps = 1.0/elapsed_time;
-            
-            
         }
         //yield();
         sleep(5);
@@ -186,8 +180,8 @@ void ofxFaceTracker2::threadedFunction(){
 }
 
 void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
-    if(_w == -1) _w = w;
-    if(_h == -1) _h = h;
+    if(_w == -1) _w = inputWidth;
+    if(_h == -1) _h = inputHeight;
     
     if(failed) {
         return;
@@ -200,8 +194,8 @@ void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
         ofTranslate(-_w/2, -_h/2);
     }
     
-    if(_w != w || _h != h){
-        ofScale((float)_w/w, (float)_h/h);
+    if(_w != inputWidth || _h != inputHeight){
+        ofScale((float)_w/inputWidth, (float)_h/inputHeight);
     }
     
     ofPushStyle();
@@ -254,15 +248,15 @@ void ofxFaceTracker2::drawPose(int face) {
 }
 
 void ofxFaceTracker2::setRotation(int rotation){
-    this->rotation = rotation;
+    this->imageRotation = rotation;
 }
 
-void ofxFaceTracker2::setRescale(float rescale) {
-    this->rescale = rescale;
+void ofxFaceTracker2::setFaceDetectorImageSize(int numPixels) {
+    this->faceDetectorImageSize = numPixels;
 }
 
-void ofxFaceTracker2::setLandmarkRescale(float rescale){
-    this->landmarkRescale = rescale;
+void ofxFaceTracker2::setLandmarkDectorImageSize(int numPixels){
+    this->landmarkDetectorImageSize = numPixels;
 }
 
 int ofxFaceTracker2::getThreadFps()const{
@@ -278,8 +272,8 @@ ofVec2f ofxFaceTracker2::getImagePoint(int i, int face) const {
         return ofVec2f();
     }
     
-    return ofVec2f(facesObjects[face].part(i).x() / landmarkRescale,
-                   facesObjects[face].part(i).y() / landmarkRescale);
+    return ofVec2f(facesObjects[face].part(i).x() * ((float)inputWidth / im.cols),
+                   facesObjects[face].part(i).y() * ((float)inputHeight / im.rows));
 }
 
 vector<ofVec2f> ofxFaceTracker2::getImagePoints(int face) const {
@@ -321,7 +315,7 @@ ofMesh ofxFaceTracker2::getImageMesh() const{
 
 template <class T>
 ofMesh ofxFaceTracker2::getMesh(vector<T> points) const {
-    cv::Rect rect(0, 0, w, h);
+    cv::Rect rect(0, 0, inputWidth, inputHeight);
     cv::Subdiv2D subdiv(rect);
     
     for(int i=0;i<points.size();i++){
@@ -392,7 +386,9 @@ vector<int> ofxFaceTracker2::getFeatureIndices(Feature feature) {
     }
 }
 
-ofVec3f ofxFaceTracker2::transformPosePosition(ofVec3f p, int face){
+ofVec2f ofxFaceTracker2::transformPosePosition(ofVec3f p, int face){
+    if(size( )<= face) return ofVec3f();
+    
     if(!poseCalculated[face]){
         calculatePoseMatrix(face);
     }
@@ -422,6 +418,8 @@ void ofxFaceTracker2::applyPoseMatrix(int face){
 
 // Estimates the heads 3d position and orientation
 void ofxFaceTracker2::calculatePoseMatrix(int face){
+    if(size( )<= face) return;
+    
     enum FACIAL_FEATURE {
         NOSE=30,
         RIGHT_EYE=36,
@@ -455,9 +453,9 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
     const cv::Point3f P3D_MENTON( 0.,-133.0, 0.);
 
     float aov = 80;
-    float focalLength = (w/landmarkRescale) * ofDegToRad(aov);
-    float opticalCenterX = (w/landmarkRescale)/2;
-    float opticalCenterY = (h/landmarkRescale)/2;
+    float focalLength = inputWidth * ofDegToRad(aov);
+    float opticalCenterX = inputWidth/2;
+    float opticalCenterY = inputHeight/2;
     
     cv::Mat1d projectionMat = cv::Mat::zeros(3,3,CV_32F);
     poseProjection[face] = projectionMat;
@@ -500,7 +498,7 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
 #else
     cv::ITERATIVE);
 #endif
-    Size2i imageSize(w/landmarkRescale, h/landmarkRescale);
+    Size2i imageSize(inputWidth, inputHeight);
     intrinsics[face].setup(poseProjection[face], imageSize);
 
     poseCalculated[face] = true;
@@ -512,3 +510,20 @@ void ofxFaceTracker2::exitEvent(ofEventArgs& e){
     
 }
 
+void ofxFaceTracker2::rotate_90n(cv::Mat &src, cv::Mat &dst, int angle)
+{
+    if(angle == 270 || angle == -90){
+        // Rotate clockwise 270 degrees
+        cv::flip(src.t(), dst, 0);
+    }else if(angle == 180 || angle == -180){
+        // Rotate clockwise 180 degrees
+        cv::flip(src, dst, -1);
+    }else if(angle == 90 || angle == -270){
+        // Rotate clockwise 90 degrees
+        cv::flip(src.t(), dst, 1);
+    }else if(angle == 360 || angle == 0){
+        if(src.data != dst.data){
+            src.copyTo(dst);
+        }
+    }
+}
