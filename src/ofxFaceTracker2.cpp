@@ -259,15 +259,13 @@ void ofxFaceTracker2::drawPose(int face) {
     ofPushView();
     ofPushStyle();
     loadPoseMatrix(face);
-    
+
     ofSetColor(255,0,0);
     ofDrawLine(0,0,0, 200,0,0);
-    ofDrawLine(-200,100,0, 200,100,0);
-    ofDrawLine(-200,200,0, 200,200,0);
     ofSetColor(0,255,0);
     ofDrawLine(0,0,0, 0,100,0);
     ofSetColor(0,0,255);
-    ofDrawLine(0,0,0, 0,0,100);
+    ofDrawLine(0,0,0, 0,0,-100);
 
     ofPopStyle();
     ofPopView();
@@ -455,9 +453,8 @@ void ofxFaceTracker2::loadPoseMatrix(int face){
         calculatePoseMatrix(face);
     }
     
-    ofMatrix4x4 matrix = ofxCv::makeMatrix(poservec[face], posetvec[face]);
-    matrix.scale(-1, 1, 1);
-
+    ofMatrix4x4 matrix = getPoseMatrix(face);
+    
     loadPoseProjectionMatrix();
     ofLoadMatrix(matrix);
 }
@@ -505,7 +502,7 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
     const cv::Point3f P3D_STOMMION( 0.,-75.0,10.0);
     const cv::Point3f P3D_MENTON( 0.,-133.0, 0.);
 
-    float aov = 80;
+    float aov = 50;
     float focalLength = inputWidth * ofDegToRad(aov);
     float opticalCenterX = inputWidth/2;
     float opticalCenterY = inputHeight/2;
@@ -552,11 +549,14 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
     cv::ITERATIVE);
 #endif
     
+    // Black magic: The x axis in the rotation vector needs to get flipped.
+    poservec[0] *= -1;
+    
     poseCalculated[face] = true;
 }
 
 void ofxFaceTracker2::calculateIntrinsics(){
-    float aov = 80;
+    float aov = 50;
     float focalLength = inputWidth * ofDegToRad(aov);
     float opticalCenterX = inputWidth/2;
     float opticalCenterY = inputHeight/2;
