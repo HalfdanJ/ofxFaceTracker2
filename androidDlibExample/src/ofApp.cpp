@@ -12,7 +12,7 @@ void ofApp::setup(){
 	grabber.setPixelFormat(OF_PIXELS_MONO);
 
 	// High res camera, yeah
-	grabber.setup(640,480);
+	grabber.setup(1280,960);
 	tracker.setup();
 
 	// Get the orientation and facing of the current camera
@@ -34,7 +34,6 @@ void ofApp::update(){
 	grabber.update();
 	if(grabber.isFrameNew()) {
 		int o = (appOrientation+cameraOrientation)%360;
-		ofLog()<<"Orientation "<<o;
 		tracker.setFaceRotation(o);
 		tracker.update(grabber);
 
