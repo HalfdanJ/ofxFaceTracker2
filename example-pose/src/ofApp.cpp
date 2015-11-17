@@ -29,7 +29,7 @@ void ofApp::draw(){
         tracker.loadPoseMatrix(i);
         
         // Draw sphere (0,0,0) is forehead
-        ofDrawSphere(0, 0, 150, 20);
+        ofDrawSphere(0, 0, -150, 20);
         
         ofPopView();
     }
