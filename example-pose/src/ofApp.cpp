@@ -26,7 +26,7 @@ void ofApp::draw(){
         
         // Apply the pose matrix
         ofPushView();
-        tracker.applyPoseMatrix(i);
+        tracker.loadPoseMatrix(i);
         
         // Draw sphere (0,0,0) is forehead
         ofDrawSphere(0, 0, 150, 20);

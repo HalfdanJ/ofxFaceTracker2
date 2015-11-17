@@ -148,6 +148,10 @@ bool ofxFaceTracker2::update(Mat image) {
         mutex.unlock();
     }
 
+    if(!intrinsicsCalculated){
+        calculateIntrinsics();
+    }
+    
     return !failed;
 }
 
@@ -254,10 +258,12 @@ void ofxFaceTracker2::drawPose(int face) {
     
     ofPushView();
     ofPushStyle();
-    applyPoseMatrix(face);
+    loadPoseMatrix(face);
     
     ofSetColor(255,0,0);
-    ofDrawLine(0,0,0, 100,0,0);
+    ofDrawLine(0,0,0, 200,0,0);
+    ofDrawLine(-200,100,0, 200,100,0);
+    ofDrawLine(-200,200,0, 200,200,0);
     ofSetColor(0,255,0);
     ofDrawLine(0,0,0, 0,100,0);
     ofSetColor(0,0,255);
@@ -428,7 +434,21 @@ ofVec2f ofxFaceTracker2::transformPosePosition(ofVec3f p, int face){
     return ofxCv::toOf(projected_axes[0]);
 }
 
-void ofxFaceTracker2::applyPoseMatrix(int face){
+ofMatrix4x4 ofxFaceTracker2::getPoseMatrix(int face){
+    if(size() <= face) return ofMatrix4x4::newIdentityMatrix();
+
+    if(!poseCalculated[face]){
+        calculatePoseMatrix(face);
+    }
+    
+    
+    ofMatrix4x4 matrix = ofxCv::makeMatrix(poservec[face], posetvec[face]);
+    matrix.scale(-1, 1, 1);
+    
+    return matrix;
+}
+
+void ofxFaceTracker2::loadPoseMatrix(int face){
     if(size() <= face) return;
     
     if(!poseCalculated[face]){
@@ -438,10 +458,16 @@ void ofxFaceTracker2::applyPoseMatrix(int face){
     ofMatrix4x4 matrix = ofxCv::makeMatrix(poservec[face], posetvec[face]);
     matrix.scale(-1, 1, 1);
 
-    intrinsics[face].loadProjectionMatrix(10, 200000);
+    loadPoseProjectionMatrix();
     ofLoadMatrix(matrix);
 }
 
+void ofxFaceTracker2::loadPoseProjectionMatrix(){
+    if(!intrinsicsCalculated){
+        return;
+    }
+    intrinsics.loadProjectionMatrix(10, 200000);
+}
 
 // Estimates the heads 3d position and orientation
 void ofxFaceTracker2::calculatePoseMatrix(int face){
@@ -525,10 +551,27 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
 #else
     cv::ITERATIVE);
 #endif
-    Size2i imageSize(inputWidth, inputHeight);
-    intrinsics[face].setup(poseProjection[face], imageSize);
-
+    
     poseCalculated[face] = true;
+}
+
+void ofxFaceTracker2::calculateIntrinsics(){
+    float aov = 80;
+    float focalLength = inputWidth * ofDegToRad(aov);
+    float opticalCenterX = inputWidth/2;
+    float opticalCenterY = inputHeight/2;
+    
+    cv::Mat1d projectionMat = cv::Mat::zeros(3,3,CV_32F);
+    projectionMat(0,0) = focalLength;
+    projectionMat(1,1) = focalLength;
+    projectionMat(0,2) = opticalCenterX;
+    projectionMat(1,2) = opticalCenterY;
+    projectionMat(2,2) = 1;
+
+    Size2i imageSize(inputWidth, inputHeight);
+    intrinsics.setup(projectionMat, imageSize);
+    
+    intrinsicsCalculated = true;
 }
 
 void ofxFaceTracker2::exitEvent(ofEventArgs& e){

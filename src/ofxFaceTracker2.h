@@ -111,7 +111,9 @@ public:
     
     ofNode getPoseNode(int face=0);
     ofVec2f transformPosePosition(ofVec3f p, int face=0);
-    void applyPoseMatrix(int face=0);
+    ofMatrix4x4 getPoseMatrix(int face=0);
+    void loadPoseMatrix(int face=0);
+    void loadPoseProjectionMatrix();
 
     /// Set the image size the facedetector should work on.
     /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
@@ -139,9 +141,13 @@ public:
 	*/
 protected:
     void calculatePoseMatrix(int face=0);
+    void calculateIntrinsics();
+    
+    bool intrinsicsCalculated;
+    
     bool poseCalculated[MAX_FACES];
     cv::Mat1d poseProjection[MAX_FACES];
-    ofxCv::Intrinsics intrinsics[MAX_FACES];
+    ofxCv::Intrinsics intrinsics;
     cv::Mat poservec[MAX_FACES];
     cv::Mat posetvec[MAX_FACES];
     
