@@ -4,6 +4,8 @@
 void ofApp::setup(){
     grabber.setup(640, 480);
     tracker.setup();
+    
+    ofEnableAlphaBlending();
 }
 
 //--------------------------------------------------------------
@@ -19,6 +21,7 @@ void ofApp::draw(){
     // Draw the grabber
     grabber.draw(0,0);
     
+    ofPushStyle();
     for(int i=0;i<tracker.size();i++){
         
         // Draw debug pose
@@ -28,11 +31,26 @@ void ofApp::draw(){
         ofPushView();
         tracker.loadPoseMatrix(i);
         
-        // Draw sphere (0,0,0) is forehead
-        ofDrawSphere(0, 0, -150, 20);
+        
+        ofSetColor(255,0,0,50);
+        ofDrawRectangle(0, 0, 200, 200);
+
+        ofPushMatrix();
+        ofSetColor(0,255,0,50);
+        ofRotate(90, 1, 0, 0);
+        ofDrawRectangle(0, 0, 200, 200);
+        ofPopMatrix();
+
+        ofPushMatrix();
+        ofSetColor(0,0,255,50);
+        ofRotate(90, 0, 1, 0);
+        ofDrawRectangle(0, 0, 200, -200);
+        ofPopMatrix();
+
         
         ofPopView();
     }
+    ofPopStyle();
     
     ofDrawBitmapString("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
 }

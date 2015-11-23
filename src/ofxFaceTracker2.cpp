@@ -16,7 +16,7 @@ ofxFaceTracker2::ofxFaceTracker2()
 ,landmarkDetectorImageSize(-1)
 
 #ifdef TARGET_ANDROID
-,faceDetectorImageSize(160*120)
+,faceDetectorImageSize(160*120*1.3)
 #else
 ,faceDetectorImageSize(480*360)
 #endif
@@ -438,11 +438,10 @@ ofMatrix4x4 ofxFaceTracker2::getPoseMatrix(int face){
     if(!poseCalculated[face]){
         calculatePoseMatrix(face);
     }
-    
+
     
     ofMatrix4x4 matrix = ofxCv::makeMatrix(poservec[face], posetvec[face]);
     matrix.scale(-1, 1, 1);
-    
     return matrix;
 }
 
@@ -550,8 +549,10 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
 #endif
     
     // Black magic: The x axis in the rotation vector needs to get flipped.
-    poservec[0] *= -1;
-    
+    double * r = poservec[face].ptr<double>(0) ;
+    r[0] *= -1;
+    r[1] *= -1;
+
     poseCalculated[face] = true;
 }
 
