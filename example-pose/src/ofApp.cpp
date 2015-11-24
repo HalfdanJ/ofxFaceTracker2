@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    grabber.setup(640, 480);
+    grabber.setup(800, 600);
     tracker.setup();
     
     ofEnableAlphaBlending();
@@ -31,20 +31,21 @@ void ofApp::draw(){
         ofPushView();
         tracker.loadPoseMatrix(i);
         
+        // Now position 0,0,0 is at the forehead
         
         ofSetColor(255,0,0,50);
         ofDrawRectangle(0, 0, 200, 200);
 
         ofPushMatrix();
         ofSetColor(0,255,0,50);
-        ofRotate(90, 1, 0, 0);
+        ofRotate(-90, 1, 0, 0);
         ofDrawRectangle(0, 0, 200, 200);
         ofPopMatrix();
 
         ofPushMatrix();
         ofSetColor(0,0,255,50);
         ofRotate(90, 0, 1, 0);
-        ofDrawRectangle(0, 0, 200, -200);
+        ofDrawRectangle(0, 0, 200, 200);
         ofPopMatrix();
 
         

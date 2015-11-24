@@ -31,8 +31,10 @@ class ofxFaceTracker2 : public ofThread {
 public:
 	ofxFaceTracker2();
     ~ofxFaceTracker2();
-	void setup();
+
+    void setup();
     
+    /// Update the trackers input image
 	bool update(cv::Mat image);
 
     template <class T>
@@ -40,52 +42,37 @@ public:
         update(ofxCv::toCv(image));
     }
     
+    /// Draw a debug drawing of the detected face
     void draw(int x=0, int y=0, int w=-1, int h=-1) const;
+
+    /// Draw a debug drawing of the pose of the detected face
     void drawPose(int face=0);
-    
+
+    /// Stop the background tracker thread
     void stop();
     
-	//virtual void reset();
-	
     /// Get number of detected faces
 	int size() const;
     
+    /// Returns the fps the background tracker thread is running with
     int getThreadFps()const;
-    //bool getFound() const;
-	/*bool getHaarFound() const;
-	int getAge() const;
-	virtual bool getVisibility(int i) const;*/
-    
+
+    /// Get a list of 2D points in screen space with all the face landmarks found
 	vector<ofVec2f> getImagePoints(int face=0) const;
+
+    /// Like getImagePoints, just returns the points as cv:Point2f
     vector<cv::Point2f> getCvImagePoints(int face=0) const;
-/*vector<ofVec3f> getObjectPoints() const;
-	vector<ofVec3f> getMeanObjectPoints() const;
-	*/
-	virtual ofVec2f getImagePoint(int i, int face=0) const;
-	/*virtual ofVec3f getObjectPoint(int i) const;
-	virtual ofVec3f getMeanObjectPoint(int i) const;
-	*/
-	ofMesh getImageMesh() const;
-	/*ofMesh getObjectMesh() const;
-	ofMesh getMeanObjectMesh() const;*/
-	template <class T> ofMesh getMesh(vector<T> points) const;
-	/*
-	virtual const cv::Mat& getObjectPointsMat() const;
+
+    /// Get specific 2D image point
+    ofVec2f getImagePoint(int i, int face=0) const;
+
+    
+    ofMesh getImageMesh() const;
 	
-	virtual ofRectangle getHaarRectangle() const;
-	virtual ofVec2f getPosition() const; // pixels
-	virtual float getScale() const; // arbitrary units
-	virtual ofVec3f getOrientation() const; // radians
-	ofMatrix4x4 getRotationMatrix() const;
+    template <class T> ofMesh getMesh(vector<T> points) const;
 	
-	enum Direction {
-		FACING_FORWARD,
-		FACING_LEFT, FACING_RIGHT,
-		FACING_UNKNOWN
-	};
-	Direction getDirection() const;
-	*/
-	enum Feature {
+    
+    enum Feature {
         LEFT_EYE_TOP, RIGHT_EYE_TOP,
         
 		LEFT_EYEBROW, RIGHT_EYEBROW,
@@ -95,25 +82,21 @@ public:
 		NOSE_BRIDGE, NOSE_BASE,
 		FACE_OUTLINE, ALL_FEATURES
 	};
-	ofPolyline getImageFeature(Feature feature, int face=0) const;
-	/*ofPolyline getObjectFeature(Feature feature) const;
-	ofPolyline getMeanObjectFeature(Feature feature) const;
-	
-	enum Gesture {
-		MOUTH_WIDTH, MOUTH_HEIGHT,
-		LEFT_EYEBROW_HEIGHT, RIGHT_EYEBROW_HEIGHT,
-		LEFT_EYE_OPENNESS, RIGHT_EYE_OPENNESS,
-		JAW_OPENNESS,
-		NOSTRIL_FLARE
-	};
-	float getGesture(Gesture gesture) const;
-	*/
+
+    /// Get poly line of a feature
+    ofPolyline getImageFeature(Feature feature, int face=0) const;
     
-    ofNode getPoseNode(int face=0);
+    /// Transforms a 3D point in pose coordinate space to 2D point in screen space
     ofVec2f transformPosePosition(ofVec3f p, int face=0);
-    ofMatrix4x4 getPoseMatrix(int face=0);
+    
+    /// Load the pose matrix into OpenGL, this allows you to draw 3D objects in the heads coordinate system
     void loadPoseMatrix(int face=0);
+    
+    /// Load the pose OpenGL projection matrix
     void loadPoseProjectionMatrix();
+
+    /// Get the matrix for the heads pose
+    ofMatrix4x4 getPoseMatrix(int face=0);
 
     /// Set the image size the facedetector should work on.
     /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
@@ -132,13 +115,6 @@ public:
     // Set the rotation in degrees of the faces. Usefull on mobile where the camera is rotated
     void setFaceRotation(float rotation);
     
-/*	void setIterations(int iterations);
-	void setClamp(float clamp);
-	void setTolerance(float tolerance);
-	void setAttempts(int attempts);
-	void setUseInvisible(bool useInvisible);
-	void setHaarMinSize(float minSize);
-	*/
 protected:
     void calculatePoseMatrix(int face=0);
     void calculateIntrinsics();
@@ -167,7 +143,6 @@ protected:
     std::vector<dlib::rectangle> facesRects;
     std::vector< dlib::full_object_detection > facesObjects;
     
-//	void addTriangleIndices(ofMesh& mesh) const;
     template <class T> ofPolyline getFeature(Feature feature, vector<T> points) const;
     
     void exitEvent(ofEventArgs& e);
@@ -183,24 +158,10 @@ protected:
     int numFaces;
     
     ofMatrix4x4 landmarkRotationMatrix;
-/*	int frameSkip;
-	
-	vector<int> wSize1, wSize2;
-	int iterations;
-	int attempts;
-	double clamp, tolerance;
-	bool useInvisible;
-	
-	FACETRACKER::Tracker tracker;
-	cv::Mat tri, con;
-	*/
-	cv::Mat im, gray;
-    cv::Mat threadGray;
-/*	cv::Mat objectPoints;
-     */
-    
-    int thread_fps;
 
+    cv::Mat im, gray;
+    cv::Mat threadGray;
+    int thread_fps;
 };
 
 template <class T>

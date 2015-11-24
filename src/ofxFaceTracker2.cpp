@@ -225,15 +225,6 @@ void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
     ofPushStyle();
     for (int j = 0; j < size(); ++j){
         ofNoFill();
-
-		/*ofPushStyle();
-		ofSetRectMode(OF_RECTMODE_CORNER);
-        ofDrawRectangle(facesRects[j].tl_corner().x() / landmarkRescale,
-                        facesRects[j].tl_corner().y() / landmarkRescale,
-                        facesRects[j].width() / landmarkRescale,
-                        facesRects[j].height() / landmarkRescale);
-        ofPopStyle();
-        */
         
         getImageFeature(LEFT_EYE).draw();
         getImageFeature(RIGHT_EYE).draw();
@@ -379,19 +370,6 @@ ofMesh ofxFaceTracker2::getMesh(vector<T> points) const {
     }
     return mesh;
 
-    
-
-    /*ofMesh mesh;
-     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-     if(!failed) {
-     int n = size();
-     for(int i = 0; i < n; i++) {
-     mesh.addVertex(points[i]);
-     mesh.addTexCoord(getImagePoint(i));
-     }
-     addTriangleIndices(mesh);
-     }
-     return mesh;*/
 }
 
 vector<int> ofxFaceTracker2::getFeatureIndices(Feature feature) {
@@ -578,7 +556,6 @@ void ofxFaceTracker2::calculateIntrinsics(){
 void ofxFaceTracker2::exitEvent(ofEventArgs& e){
     ofRemoveListener(ofEvents().exit, this, &ofxFaceTracker2::exitEvent);
     stop();
-    
 }
 
 void ofxFaceTracker2::rotate_90n(cv::Mat &src, cv::Mat &dst, int angle)
