@@ -7,15 +7,7 @@ void ofApp::setup(){
         
     tracker.setup();
 
-    tracker2.setRescale(0.5);
-    tracker2.setLandmarkRescale(1);
     tracker2.setup();
-//    tracker2.setRotation(-90);
-    
-    finder.setup("haarcascade_frontalface_default.xml");
-    finder.setPreset(ofxCv::ObjectFinder::Fast);
-    
-    
 }
 
 
@@ -28,8 +20,6 @@ void ofApp::exit() {
 void ofApp::update(){
     grabber.update();
     if(grabber.isFrameNew()){
-        finder.update(grabber);
-
         clock_t start = clock() ;
         
         tracker.update(ofxCv::toCv(grabber));
@@ -65,8 +55,6 @@ void ofApp::draw(){
     ofSetColor(255);
     tracker2.draw();
     
-    ofDrawBitmapString("tracker fps "+ofToString(tracker2.getFps()), 20, 40);
-
     ofDrawBitmapString("tracker thread fps "+ofToString(tracker2.getThreadFps()), 20, 60);
 
     

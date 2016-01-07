@@ -18,7 +18,7 @@ meta:
 	ADDON_NAME = ofxFaceTracker2
 	ADDON_DESCRIPTION = 
 	ADDON_AUTHOR = Jonas Jongejan
-	# ADDON_TAGS = "networking"
+	ADDON_TAGS = "computer vision"
 	# ADDON_URL = http://github.com/openframeworks/openFrameworks
 
 common:

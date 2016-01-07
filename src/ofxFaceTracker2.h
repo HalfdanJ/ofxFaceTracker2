@@ -109,11 +109,14 @@ public:
     /// Default is -1, that means no resizing happens (use native resolution from input image)
     void setLandmarkDetectorImageSize(int numPixels);
     
-    // Set the orienation of the faces. Usefull on mobile where the camera is rotated
+    /// Set the orienation of the faces. Usefull on mobile where the camera is rotated
     void setFaceOrientation(ofOrientation orientation);
 
-    // Set the rotation in degrees of the faces. Usefull on mobile where the camera is rotated
+    /// Set the rotation in degrees of the faces. Usefull on mobile where the camera is rotated
     void setFaceRotation(float rotation);
+
+    /// Set weather the tracker should run threaded or not
+    void setThreaded(bool threaded);
     
 protected:
     void calculatePoseMatrix(int face=0);

@@ -278,6 +278,10 @@ void ofxFaceTracker2::setLandmarkDetectorImageSize(int numPixels){
     this->landmarkDetectorImageSize = numPixels;
 }
 
+void ofxFaceTracker2::setThreaded(bool threaded){
+    this->threaded = threaded;
+}
+
 int ofxFaceTracker2::getThreadFps()const{
     return thread_fps;
 }
@@ -440,7 +444,7 @@ void ofxFaceTracker2::loadPoseProjectionMatrix(){
     if(!intrinsicsCalculated){
         return;
     }
-    intrinsics.loadProjectionMatrix(10, 200000);
+    intrinsics.loadProjectionMatrix(1, 200000);
 }
 
 // Estimates the heads 3d position and orientation

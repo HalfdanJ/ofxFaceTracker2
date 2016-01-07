@@ -32,9 +32,7 @@ public:
 
     ofxFaceTracker tracker;
     ofxFaceTracker2 tracker2;
-    
-    ofxCv::ObjectFinder finder;
-    
+        
     std::deque<double> oldTracker;
     std::deque<double> newTracker;
 };
