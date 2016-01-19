@@ -1,23 +1,14 @@
-/*
- ofxFaceTracker provides an interface to Jason Saragih's FaceTracker library.
- 
- getImagePoint()/getImageMesh() are in image space. This means that all the
- points will line up with the pixel coordinates of the image you fed into
- ofxFaceTracker.
- 
- getObjectPoint()/getObjectMesh() are in 3d object space. This is a product of
- the mean mesh with only the expression applied. There is no rotation or
- translation applied to the object space.
- 
- getMeanObjectPoint()/getMeanObjectMesh() are also in 3d object space. However,
- there is no expression applied to the mesh.
- */
-
 #pragma once
 
-#include "ofxCv.h"
-//#include "ofxDelaunay.h"
+// Include the parts of openFrameworks that are required
+#include "ofConstants.h"
+#include "ofThread.h"
+#include "ofGraphics.h"
 
+// Include addon dependencies
+#include "ofxCv.h"
+
+// Include DLIB
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/generic_image.h>
 #include <dlib/image_processing.h>
@@ -25,7 +16,6 @@
 #include <dlib/opencv.h>
 
 #define MAX_FACES 20
-
 
 class ofxFaceTracker2 : public ofThread {
 public:

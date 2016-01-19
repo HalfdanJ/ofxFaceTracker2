@@ -42,7 +42,7 @@ void ofxFaceTracker2::setup() {
     } else {
         throw std::runtime_error("\
                                  ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found in bin/data.\
-                                 \
+                                 \n\n\
                                  Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
     }
     
