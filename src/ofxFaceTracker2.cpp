@@ -292,8 +292,15 @@ int ofxFaceTracker2::size() const {
 
 vector<ofRectangle> ofxFaceTracker2::getFaceBoundingBoxes() const {
     vector<ofRectangle> ret;
-    for(auto rect : facesRects){
-        ret.push_back(ofRectangle(rect.left(),rect.top(), rect.width(), rect.height()));
+    for(int i=0; i<size(); i++){
+	ofRectangle rect = ofRectangle();
+	if(facesRects.size() > i){
+	    rect = ofRectangle(facesRects[i].left(),
+			       facesRects[i].top(),
+			       facesRects[i].width(),
+			       facesRects[i].height());
+	}
+	ret.push_back(rect);
     }
     return ret;
 }
