@@ -290,6 +290,14 @@ int ofxFaceTracker2::size() const {
     return numFaces;
 }
 
+vector<ofRectangle> ofxFaceTracker2::getFaceBoundingBoxes() const {
+    vector<ofRectangle> ret;
+    for(auto rect : facesRects){
+        ret.push_back(ofRectangle(rect.left(),rect.top(), rect.width(), rect.height()));
+    }
+    return ret;
+}
+
 ofVec2f ofxFaceTracker2::getImagePoint(int i, int face) const {
     if(size() <= face) {
         return ofVec2f();
@@ -527,7 +535,7 @@ void ofxFaceTracker2::calculatePoseMatrix(int face){
 #ifdef OPENCV3
     cv::SOLVEPNP_ITERATIVE);
 #else
-    cv::ITERATIVE);
+    CV_ITERATIVE);
 #endif
     
     // Black magic: The x axis in the rotation vector needs to get flipped.

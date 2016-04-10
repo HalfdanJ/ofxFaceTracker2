@@ -14,7 +14,7 @@
  */
 
 #pragma once
-
+#include "ofMain.h"
 #include "ofxCv.h"
 //#include "ofxDelaunay.h"
 
@@ -53,6 +53,9 @@ public:
     
     /// Get number of detected faces
 	int size() const;
+    
+    /// Get the bounding box for a face
+    vector<ofRectangle> getFaceBoundingBoxes() const;
     
     /// Returns the fps the background tracker thread is running with
     int getThreadFps()const;
