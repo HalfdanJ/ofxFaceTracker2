@@ -35,17 +35,17 @@ function prepare() {
 function build() {
     if [ "$TYPE" == "osx" ] ; then
 		cd dlib
-		if [ -d  builds ]; then
-			mkdir build
-		fi
+		#if [ -d  builds ]; then
+		mkdir build
+		#fi
 		cd build
 
-		cmake .. 
+		cmake ..
 		cmake --build . --config Release
 		cd ../../
 	elif [ "$TYPE" == "android" ] ; then
-		ndk-build -j4 NDK_DEBUG=0 NDK_PROJECT_PATH=. 
-	
+		ndk-build -j4 NDK_DEBUG=0 NDK_PROJECT_PATH=.
+
 	fi
 }
 # executed inside the lib src dir, first arg $1 is the dest libs dir root
@@ -55,19 +55,19 @@ function copy() {
 	    rm -rf $1/include
 	fi
 	mkdir -p $1/include
- 
+
 	if [ "$TYPE" == "osx" ] ; then
 	    cp -vr dlib/ $1/include/dlib
 	    rm -rf $1/include/dlib/build
 	    rm -rf $1/include/dlib/test
-	    rm  $1/include/dlib/all_gui.cpp		
+	    rm  $1/include/dlib/all_gui.cpp
 
 	    cp -v dlib/build/libdlib.a $1/lib/osx/libdlib.a
 	elif [ "$TYPE" == "android" ] ; then
 	    cp -vr dlib/ $1/include/dlib
 		rm -rf $1/include/dlib/build
 	    rm -rf $1/include/dlib/test
-	    rm  $1/include/dlib/all_gui.cpp		
+	    rm  $1/include/dlib/all_gui.cpp
 
 	    cp -vr obj/local/armeabi/libdlib.a $1/lib/android/armeabi/libdlib.a
 	    cp -vr obj/local/armeabi-v7a/libdlib.a $1/lib/android/armeabi-v7a/libdlib.a
@@ -91,5 +91,5 @@ function clean() {
 	fi
 
 
-    
+
 }
