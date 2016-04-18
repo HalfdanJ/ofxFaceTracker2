@@ -26,7 +26,7 @@ ofxFaceTracker2::ofxFaceTracker2()
 
 void ofxFaceTracker2::setup() {
 #ifndef __OPTIMIZE__
-    ofLogWarning()<<"ofxFaceTracker2: Warning, the facetracker background thread runs very slowly in debug mode!";
+    ofLogWarning("ofxFaceTracker2")<<"Warning, the facetracker background thread runs very slowly in debug mode!";
 #endif
     
     // Add listener for app exit to properly close thread
@@ -34,7 +34,7 @@ void ofxFaceTracker2::setup() {
     
     // Get dlib's frontal face detector
     detector = dlib::get_frontal_face_detector();
-    
+
     // Load landmark data file
     ofFile dataFile = ofFile("shape_predictor_68_face_landmarks.dat");
     if(dataFile.exists()){
@@ -50,14 +50,14 @@ void ofxFaceTracker2::setup() {
     
     // Start the background thread
     if(threaded){
-        startThread(false);
+        startThread();
     }
 }
 
 
 ofxFaceTracker2::~ofxFaceTracker2(){
     if(isThreadRunning()) {
-        ofLogError()<<"ofxFaceTrackerThreaded :: Tracker was not stopped. You must call the trackers stop() before destroying the tracker object.";
+        ofLogError("ofxFaceTrackerThreaded")<<"Tracker was not stopped. You must call the trackers stop() before destroying the tracker object.";
     }
 }
 
@@ -70,7 +70,7 @@ void ofxFaceTracker2::stop(){
 
 bool ofxFaceTracker2::update(Mat image) {
     clock_t start = clock() ;
-    
+
     inputWidth = image.cols;
     inputHeight = image.rows;
 
@@ -79,69 +79,69 @@ bool ofxFaceTracker2::update(Mat image) {
 	if(landmarkDetectorImageSize == -1 || inputWidth*inputHeight <= landmarkDetectorImageSize) {
 		im = image;
 	} else {
-        float scale = sqrt((float) landmarkDetectorImageSize / (inputHeight*inputWidth));
-        resize(image, im, cv::Size(), scale,scale, cv::INTER_NEAREST);
+	float scale = sqrt((float) landmarkDetectorImageSize / (inputHeight*inputWidth));
+	resize(image, im, cv::Size(), scale,scale, cv::INTER_NEAREST);
 	}
-    
+
     if(imageRotation){
-        rotate_90n(im, im, imageRotation);
+	rotate_90n(im, im, imageRotation);
     }
 
     if(imageRotation == 90){
-        landmarkRotationMatrix.makeIdentityMatrix();
-        landmarkRotationMatrix.translate(-im.cols,0,0);
-        landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
-        landmarkRotationMatrix.rotate(-90, 0,0,1);
+	landmarkRotationMatrix.makeIdentityMatrix();
+	landmarkRotationMatrix.translate(-im.cols,0,0);
+	landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
+	landmarkRotationMatrix.rotate(-90, 0,0,1);
     } else if(imageRotation == 270){
-        landmarkRotationMatrix.makeIdentityMatrix();
-        landmarkRotationMatrix.translate(0,-im.rows,0);
-        landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
-        landmarkRotationMatrix.rotate(90, 0,0,1);
+	landmarkRotationMatrix.makeIdentityMatrix();
+	landmarkRotationMatrix.translate(0,-im.rows,0);
+	landmarkRotationMatrix.scale(((float)inputWidth / im.rows), ((float)inputWidth / im.rows), 1);
+	landmarkRotationMatrix.rotate(90, 0,0,1);
     } else if(imageRotation == 180){
-        landmarkRotationMatrix.makeIdentityMatrix();
-        landmarkRotationMatrix.translate(-im.cols,-im.rows,0);
-        landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
-        landmarkRotationMatrix.rotate(180, 0,0,1);
+	landmarkRotationMatrix.makeIdentityMatrix();
+	landmarkRotationMatrix.translate(-im.cols,-im.rows,0);
+	landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
+	landmarkRotationMatrix.rotate(180, 0,0,1);
     } else {
-        landmarkRotationMatrix.makeIdentityMatrix();
-        landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
+	landmarkRotationMatrix.makeIdentityMatrix();
+	landmarkRotationMatrix.scale(((float)inputWidth / im.cols), ((float)inputWidth / im.cols), 1);
     }
-    
+
     if(threaded){
-        mutex.lock();
+	mutex.lock();
     }
-    
+
 	if(im.type() == CV_8UC3) {
 		cvtColor(im, gray, CV_RGB2GRAY);
 	} else if(im.type() == CV_8UC1) {
 	//	im.copyTo(gray);
-        gray = im;
+	gray = im;
 	}
     imageDirty = true;
-    
+
     dlib::cv_image<unsigned char> dlibimg(gray);
     if(!threaded){
-        facesRects = detector(dlibimg);
+	facesRects = detector(dlibimg);
     }
-    
+
     if(facesRects.size() == 0){
-        failed = true;
-        numFaces = 0;
+	failed = true;
+	numFaces = 0;
     } else {
-        facesObjects.clear();
-        failed = false;
-        
-        for (unsigned long j = 0; j < facesRects.size(); ++j)
-        {
-            dlib::full_object_detection shape = sp(dlibimg, facesRects[j]);
-            facesObjects.push_back(shape);
-        }
-        
-        for(int i=0;i<MAX_FACES;i++){
-            poseCalculated[i] = false;
-        }
-        
-        numFaces = facesRects.size();
+	facesObjects.clear();
+	failed = false;
+
+	for (unsigned long j = 0; j < facesRects.size(); ++j)
+	{
+	    dlib::full_object_detection shape = sp(dlibimg, facesRects[j]);
+	    facesObjects.push_back(shape);
+	}
+
+	for(int i=0;i<MAX_FACES;i++){
+	    poseCalculated[i] = false;
+	}
+
+	numFaces = facesRects.size();
     }
     
     if(threaded){
@@ -151,8 +151,9 @@ bool ofxFaceTracker2::update(Mat image) {
     if(!intrinsicsCalculated){
         calculateIntrinsics();
     }
-    
+
     return !failed;
+
 }
 
 
@@ -184,7 +185,7 @@ void ofxFaceTracker2::threadedFunction(){
             if(s != 1){
                 facesRects.clear();
                 for(int i=0;i<_dets.size();i++){
-                    facesRects.push_back(dlib::rectangle( _dets[i].left()*s,
+                    facesRects.push_back(dlib::rectangle(_dets[i].left()*s,
                                                          _dets[i].top()*s,
                                                          _dets[i].right()*s,
                                                          _dets[i].bottom()*s));
@@ -199,7 +200,7 @@ void ofxFaceTracker2::threadedFunction(){
             thread_fps = 1.0/elapsed_time;
         }
         //yield();
-        sleep(5);
+	sleep(5);
     }
 }
 
@@ -235,6 +236,9 @@ void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
         getImageFeature(INNER_MOUTH).draw();
         getImageFeature(OUTER_MOUTH).draw();
         getImageFeature(JAW).draw();
+        
+        auto p = getFaceBoundingBoxes()[j].getTopLeft();
+        ofDrawBitmapString("id "+ofToString(j), p.x, p.y);
     }
     
     

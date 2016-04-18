@@ -44,7 +44,7 @@ public:
     /// Get number of detected faces
 	int size() const;
     
-    /// Get the bounding box for a face
+    /// Get the bounding boxes
     vector<ofRectangle> getFaceBoundingBoxes() const;
     
     /// Returns the fps the background tracker thread is running with
