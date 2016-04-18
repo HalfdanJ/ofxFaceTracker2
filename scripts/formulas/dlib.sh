@@ -69,7 +69,6 @@ function copy() {
 	    rm -rf $1/include/dlib/test
 	    rm  $1/include/dlib/all_gui.cpp
 
-	    cp -vr obj/local/armeabi/libdlib.a $1/lib/android/armeabi/libdlib.a
 	    cp -vr obj/local/armeabi-v7a/libdlib.a $1/lib/android/armeabi-v7a/libdlib.a
 	    cp -vr obj/local/x86/libdlib.a $1/lib/android/x86/libdlib.a
 	    cp -vr obj/local/x86_64/libdlib.a $1/lib/android/x86_64/libdlib.a

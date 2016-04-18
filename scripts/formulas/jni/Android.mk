@@ -5,7 +5,7 @@ LOCAL_MODULE := dlib
 APP_OPTIM := release
 
 LOCAL_C_INCLUDE := $(LOCAL_PATH)/dlib
-LOCAL_CFLAGS := -DDLIB_NO_GUI_SUPPORT -fexceptions -frtti
+LOCAL_CFLAGS := -DDLIB_NO_GUI_SUPPORT -fexceptions -frtti  -fpic -ffunction-sections -funwind-tables -fno-strict-aliasing 
 LOCAL_CFLAGS += -DNDEBUG
 LOCAL_CFLAGS += -O2
 
