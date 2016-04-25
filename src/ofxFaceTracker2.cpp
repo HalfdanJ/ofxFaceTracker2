@@ -114,8 +114,8 @@ bool ofxFaceTracker2::update(Mat image) {
 	if(im.type() == CV_8UC3) {
 		cvtColor(im, gray, CV_RGB2GRAY);
 	} else if(im.type() == CV_8UC1) {
-		//	im.copyTo(gray);
-		gray = im;
+		im.copyTo(gray);
+		//gray = im;
 	}
 	imageDirty = true;
 
