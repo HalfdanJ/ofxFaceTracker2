@@ -25,11 +25,11 @@ public:
     void setup();
     
     /// Update the trackers input image
-	bool update(cv::Mat image);
+	bool update(cv::Mat image, cv::Rect roi=cv::Rect(0,0,0,0));
 
     template <class T>
-    bool update(T& image){
-        update(ofxCv::toCv(image));
+    bool update(T& image, cv::Rect roi=cv::Rect(0,0,0,0)){
+        update(ofxCv::toCv(image), roi);
     }
     
     /// Draw a debug drawing of the detected face
@@ -130,7 +130,7 @@ protected:
     void rotate_90n(cv::Mat &src, cv::Mat &dst, int angle);
 
     bool threaded;
-    std::mutex mutex;
+    ofMutex mutex;
     bool imageDirty;
 
     dlib::frontal_face_detector detector;
@@ -158,6 +158,8 @@ protected:
     cv::Mat im, gray;
     cv::Mat threadGray;
     int thread_fps;
+
+	cv::Rect roi, roiThread;
 };
 
 template <class T>

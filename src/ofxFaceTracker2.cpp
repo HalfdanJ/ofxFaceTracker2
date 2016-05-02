@@ -1,3 +1,4 @@
+#include <time.h>
 #include "ofxFaceTracker2.h"
 
 
@@ -68,11 +69,12 @@ void ofxFaceTracker2::stop(){
 	}
 }
 
-bool ofxFaceTracker2::update(Mat image) {
+bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	clock_t start = clock() ;
 
 	inputWidth = image.cols;
 	inputHeight = image.rows;
+
 
 	float aspect = (float)inputHeight/inputWidth;
 
@@ -111,6 +113,11 @@ bool ofxFaceTracker2::update(Mat image) {
 		mutex.lock();
 	}
 
+	roi = _roi;
+	if(roi.width == 0 && roi.height == 0){
+		roi = cv::Rect(0,0,inputWidth, inputHeight);
+	}
+
 	if(im.type() == CV_8UC3) {
 		cvtColor(im, gray, CV_RGB2GRAY);
 	} else if(im.type() == CV_8UC1) {
@@ -121,7 +128,8 @@ bool ofxFaceTracker2::update(Mat image) {
 
 	dlib::cv_image<unsigned char> dlibimg(gray);
 	if(!threaded){
-		facesRects = detector(dlibimg);
+		dlib::cv_image<unsigned char> dlibimgRects(gray(roi));
+		facesRects = detector(dlibimgRects);
 	}
 
 	if(facesRects.size() == 0){
@@ -166,11 +174,17 @@ void ofxFaceTracker2::threadedFunction(){
 
 			mutex.lock();
 			float scale = 1;
-			if(gray.cols*gray.rows <= faceDetectorImageSize){
-				gray.copyTo(threadGray);
+			roiThread = roi;
+			roiThread.x = (int)ofClamp(roiThread.x,0,gray.cols);
+			roiThread.y = (int)ofClamp(roiThread.y,0,gray.rows);
+			roiThread.width = (int)ofClamp(roiThread.width,1,gray.cols - roiThread.x);
+			roiThread.height = (int)ofClamp(roiThread.height,1,gray.rows- roiThread.y);
+
+			if(faceDetectorImageSize == -1 || roiThread.width*roiThread.height <= faceDetectorImageSize){
+				gray(roiThread).copyTo(threadGray);
 			} else {
-				scale = sqrt((float) faceDetectorImageSize / (gray.cols*gray.rows));
-				resize(gray, threadGray, cv::Size(), scale, scale, cv::INTER_NEAREST);
+				scale = sqrt((float) faceDetectorImageSize / (roiThread.width*roiThread.height));
+				resize(gray(roiThread), threadGray, cv::Size(), scale, scale, cv::INTER_NEAREST);
 			}
 
 
@@ -179,16 +193,16 @@ void ofxFaceTracker2::threadedFunction(){
 			dlib::cv_image<unsigned char> cvimg(threadGray);
 			std::vector<dlib::rectangle> _dets = detector(cvimg);
 
-			float s = 1.0/scale;
+			float s = 1.0f/scale;
 
 			mutex.lock();
-			if(s != 1){
+			if(s != 1 || roiThread.x != 0 || roiThread.y != 0){
 				facesRects.clear();
 				for(int i=0;i<_dets.size();i++){
-					facesRects.push_back(dlib::rectangle(_dets[i].left()*s,
-														 _dets[i].top()*s,
-														 _dets[i].right()*s,
-														 _dets[i].bottom()*s));
+					facesRects.push_back(dlib::rectangle(roiThread.x+_dets[i].left()*s,
+														 roiThread.y+_dets[i].top()*s,
+														 roiThread.x+_dets[i].right()*s,
+														 roiThread.y+_dets[i].bottom()*s));
 				}
 			} else {
 				facesRects = _dets;
