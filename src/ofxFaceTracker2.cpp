@@ -115,15 +115,14 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 
 	roi = _roi;
 	if(roi.width == 0 && roi.height == 0){
-		roi = cv::Rect(0,0,inputWidth, inputHeight);
+		roi = cv::Rect(0,0,im.cols, im.rows);
 	}
 
-	if(im.type() == CV_8UC3) {
-		cvtColor(im, gray, CV_RGB2GRAY);
-	} else if(im.type() == CV_8UC1) {
-		im.copyTo(gray);
-		//gray = im;
-	}
+    if(im.type() == CV_8UC1) {
+        im.copyTo(gray);
+    } else {
+        cvtColor(im, gray, CV_RGB2GRAY);
+    }
 	imageDirty = true;
 
 	dlib::cv_image<unsigned char> dlibimg(gray);
