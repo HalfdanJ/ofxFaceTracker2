@@ -24,3 +24,4 @@ bin/
 build/
 !data/
 .DS_Store
+example-data/shape_predictor_68_face_landmarks.dat

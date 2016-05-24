@@ -25,7 +25,7 @@ ofxFaceTracker2::ofxFaceTracker2()
 {
 }
 
-void ofxFaceTracker2::setup() {
+void ofxFaceTracker2::setup(string dataPath) {
 #ifndef __OPTIMIZE__
 	ofLogWarning("ofxFaceTracker2")<<"Warning, the facetracker background thread runs very slowly in debug mode!";
 #endif
@@ -37,12 +37,12 @@ void ofxFaceTracker2::setup() {
 	detector = dlib::get_frontal_face_detector();
 
 	// Load landmark data file
-	ofFile dataFile = ofFile("shape_predictor_68_face_landmarks.dat");
+	ofFile dataFile = ofFile(dataPath);
 	if(dataFile.exists()){
 		dlib::deserialize(dataFile.path()) >> sp;
 	} else {
 		throw std::runtime_error("\
-                                 ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found in bin/data.\
+                                 ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found at "+dataFile.getAbsolutePath()+".\
                                  \n\n\
                                  Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
 	}

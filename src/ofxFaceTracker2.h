@@ -22,7 +22,7 @@ public:
 	ofxFaceTracker2();
     ~ofxFaceTracker2();
 
-    void setup();
+    void setup(string dataPath="shape_predictor_68_face_landmarks.dat");
     
     /// Update the trackers input image
 	bool update(cv::Mat image, cv::Rect roi=cv::Rect(0,0,0,0));

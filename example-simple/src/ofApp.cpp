@@ -2,13 +2,22 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    // All examples share data files from example-data, so setting data path to this folder
+    // This is only relevant for the example apps
+    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../example-data/");
+    
+    // Setup grabber
     grabber.setup(1280,720);
+    
+    // Setup tracker
     tracker.setup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     grabber.update();
+    
+    // Update tracker when there are new frames
     if(grabber.isFrameNew()){
         tracker.update(grabber);
     }
@@ -16,10 +25,16 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    // Draw camera image
     grabber.draw(0, 0);
+    
+    // Draw tracker landmarks
     tracker.draw();
+    
+    // Draw estimated 3d pose
     tracker.drawPose();
     
+    // Draw text UI
     ofDrawBitmapString("Framerate : "+ofToString(ofGetFrameRate()), 10, 20);
     ofDrawBitmapString("Tracker thread framerate : "+ofToString(tracker.getThreadFps()), 10, 40);
     
@@ -28,60 +43,4 @@ void ofApp::draw(){
     ofDrawBitmapString("Warning! Run this app in release mode to get proper performance!",10,60);
     ofSetColor(ofColor::White);
 #endif
-
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
 }
