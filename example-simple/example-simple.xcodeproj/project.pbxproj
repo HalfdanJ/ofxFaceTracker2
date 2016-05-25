@@ -24,6 +24,8 @@
 		C602002DE761F9B52DB4400A /* ObjectFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE75A3FBA2C2D87D14F06FE6 /* ObjectFinder.cpp */; };
 		D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A4DD23693DFAB8EC05FAA5D /* ofxCvShortImage.cpp */; };
 		DBCB84A37F9AECC254870D79 /* Wrappers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D347FB65D19015303863922A /* Wrappers.cpp */; };
+		DDAEA0D91CF52A2100BC6FFC /* ofxFaceTracker2Instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DDAEA0D71CF52A2100BC6FFC /* ofxFaceTracker2Instance.cpp */; };
+		DDAEA0DE1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DDAEA0DC1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.cpp */; };
 		E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A16CBF2E8CFE43AF54FE6F5 /* ofxCvHaarFinder.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
@@ -242,6 +244,11 @@
 		DB0CD4C938C079DCD67222FE /* imatrix.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = imatrix.h; path = ../../../addons/ofxCv/libs/CLD/include/CLD/imatrix.h; sourceTree = SOURCE_ROOT; };
 		DB8653D6433E14BF06F3EFAF /* cvwimage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cvwimage.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cvwimage.h; sourceTree = SOURCE_ROOT; };
 		DCB56F4E9F44E31D571BC9C4 /* index_testing.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = index_testing.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/index_testing.h; sourceTree = SOURCE_ROOT; };
+		DDAEA0D71CF52A2100BC6FFC /* ofxFaceTracker2Instance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxFaceTracker2Instance.cpp; path = ../src/ofxFaceTracker2Instance.cpp; sourceTree = "<group>"; };
+		DDAEA0D81CF52A2100BC6FFC /* ofxFaceTracker2Instance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFaceTracker2Instance.h; path = ../src/ofxFaceTracker2Instance.h; sourceTree = "<group>"; };
+		DDAEA0DC1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxFaceTracker2Landmarks.cpp; path = ../src/ofxFaceTracker2Landmarks.cpp; sourceTree = "<group>"; };
+		DDAEA0DD1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFaceTracker2Landmarks.h; path = ../src/ofxFaceTracker2Landmarks.h; sourceTree = "<group>"; };
+		DDAEA0E01CF6386400BC6FFC /* ofxFaceTracker2InputInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxFaceTracker2InputInfo.h; path = ../src/ofxFaceTracker2InputInfo.h; sourceTree = "<group>"; };
 		DEA2EDC0AFD59176FDEDC222 /* ofxCvShortImage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxCvShortImage.h; path = ../../../addons/ofxOpenCv/src/ofxCvShortImage.h; sourceTree = SOURCE_ROOT; };
 		E14D3EF03E140F5604900412 /* tracking.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tracking.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/video/tracking.hpp; sourceTree = SOURCE_ROOT; };
 		E21FF871B93E31DA43FE7E42 /* vec_distance_detail.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vec_distance_detail.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/detail/vec_distance_detail.hpp; sourceTree = SOURCE_ROOT; };
@@ -407,6 +414,11 @@
 			children = (
 				1A785D79278B77F67FBCC4EA /* ofxFaceTracker2.cpp */,
 				60D140975F4EEE2F4B2B1E39 /* ofxFaceTracker2.h */,
+				DDAEA0D71CF52A2100BC6FFC /* ofxFaceTracker2Instance.cpp */,
+				DDAEA0D81CF52A2100BC6FFC /* ofxFaceTracker2Instance.h */,
+				DDAEA0DC1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.cpp */,
+				DDAEA0DD1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.h */,
+				DDAEA0E01CF6386400BC6FFC /* ofxFaceTracker2InputInfo.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -971,10 +983,12 @@
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				B6840996567E78436F7ECFAB /* ETF.cpp in Sources */,
+				DDAEA0D91CF52A2100BC6FFC /* ofxFaceTracker2Instance.cpp in Sources */,
 				F76B4A79BD8DE4854141CB47 /* fdog.cpp in Sources */,
 				EBCDE831EFAE08274E799C97 /* Calibration.cpp in Sources */,
 				6AABAB39E82AF5CFEA23A205 /* ContourFinder.cpp in Sources */,
 				45CC483A999BF1065A6B926C /* Distance.cpp in Sources */,
+				DDAEA0DE1CF6221F00BC6FFC /* ofxFaceTracker2Landmarks.cpp in Sources */,
 				5CC34D433F5806179935B89D /* Flow.cpp in Sources */,
 				2023EF517ED2D8B397511D4B /* Helpers.cpp in Sources */,
 				311DF864378748129984EA1D /* Kalman.cpp in Sources */,

@@ -15,6 +15,8 @@
 #include <dlib/serialize.h>
 #include <dlib/opencv.h>
 
+#include "ofxFaceTracker2Instance.h"
+
 #define MAX_FACES 20
 
 class ofxFaceTracker2 : public ofThread {
@@ -33,63 +35,20 @@ public:
     }
     
     /// Draw a debug drawing of the detected face
-    void draw(int x=0, int y=0, int w=-1, int h=-1) const;
+    void draw(int x=0, int y=0) const;
+    void draw(int x, int y, int w, int h) const;
 
     /// Draw a debug drawing of the pose of the detected face
     void drawPose(int face=0);
 
-    /// Stop the background tracker thread
+    /// Stop the background tracker thread (called automatically on app exit)
     void stop();
     
     /// Get number of detected faces
 	int size() const;
     
-    /// Get the bounding boxes
-    vector<ofRectangle> getFaceBoundingBoxes() const;
-    
     /// Returns the fps the background tracker thread is running with
     int getThreadFps()const;
-
-    /// Get a list of 2D points in screen space with all the face landmarks found
-	vector<ofVec2f> getImagePoints(int face=0) const;
-
-    /// Like getImagePoints, just returns the points as cv:Point2f
-    vector<cv::Point2f> getCvImagePoints(int face=0) const;
-
-    /// Get specific 2D image point
-    ofVec2f getImagePoint(int i, int face=0) const;
-
-    
-    ofMesh getImageMesh() const;
-	
-    template <class T> ofMesh getMesh(vector<T> points) const;
-	
-    
-    enum Feature {
-        LEFT_EYE_TOP, RIGHT_EYE_TOP,
-        
-		LEFT_EYEBROW, RIGHT_EYEBROW,
-		LEFT_EYE, RIGHT_EYE,
-		LEFT_JAW, RIGHT_JAW, JAW,
-		OUTER_MOUTH, INNER_MOUTH,
-		NOSE_BRIDGE, NOSE_BASE,
-		FACE_OUTLINE, ALL_FEATURES
-	};
-
-    /// Get poly line of a feature
-    ofPolyline getImageFeature(Feature feature, int face=0) const;
-    
-    /// Transforms a 3D point in pose coordinate space to 2D point in screen space
-    ofVec2f transformPosePosition(ofVec3f p, int face=0);
-    
-    /// Load the pose matrix into OpenGL, this allows you to draw 3D objects in the heads coordinate system
-    void loadPoseMatrix(int face=0);
-    
-    /// Load the pose OpenGL projection matrix
-    void loadPoseProjectionMatrix();
-
-    /// Get the matrix for the heads pose
-    ofMatrix4x4 getPoseMatrix(int face=0);
 
     /// Set the image size the facedetector should work on.
     /// The value is the number of pixels the image should be resized to (preserving the aspect ratio)
@@ -111,20 +70,21 @@ public:
     /// Set weather the tracker should run threaded or not
     void setThreaded(bool threaded);
     
+    const vector<ofxFaceTracker2Instance> & getInstances() const;
+    vector<ofxFaceTracker2Instance> & getInstances();
+    
 protected:
-    void calculatePoseMatrix(int face=0);
-    void calculateIntrinsics();
+    ofxCv::Tracker<cv::Rect> faceRectanglesTracker;
+    vector<ofxFaceTracker2Instance> instances;
+    
+    void runFaceDetector(bool lockMutex);
+    void runLandmarkDetector();
+        
+    void updateTrackerInstances(vector<dlib::rectangle> rectangles);
     
     bool intrinsicsCalculated;
+    void calculateIntrinsics();
     
-    bool poseCalculated[MAX_FACES];
-    cv::Mat1d poseProjection[MAX_FACES];
-    ofxCv::Intrinsics intrinsics;
-    cv::Mat poservec[MAX_FACES];
-    cv::Mat posetvec[MAX_FACES];
-    
-    static vector<int> getFeatureIndices(Feature feature);
-    static std::vector<int> consecutive(int start, int end);
     
     void threadedFunction();
     void rotate_90n(cv::Mat &src, cv::Mat &dst, int angle);
@@ -133,13 +93,10 @@ protected:
     ofMutex mutex;
     bool imageDirty;
 
-    dlib::frontal_face_detector detector;
+    dlib::frontal_face_detector faceDetector;
     dlib::shape_predictor sp;
     
-    std::vector<dlib::rectangle> facesRects;
     std::vector< dlib::full_object_detection > facesObjects;
-    
-    template <class T> ofPolyline getFeature(Feature feature, vector<T> points) const;
     
     void exitEvent(ofEventArgs& e);
     
@@ -149,39 +106,17 @@ protected:
 
     int faceDetectorImageSize;
     int landmarkDetectorImageSize;
-    int inputWidth, inputHeight;
     
     int numFaces;
     
-    ofMatrix4x4 landmarkRotationMatrix;
-
     cv::Mat im, gray;
     cv::Mat threadGray;
     int thread_fps;
+    
+    ofxFaceTracker2InputInfo info;
+    ofxCv::Intrinsics intrinsics;
 
-	cv::Rect roi, roiThread;
+	cv::Rect roi;
 };
 
-template <class T>
-ofPolyline ofxFaceTracker2::getFeature(Feature feature, vector<T> points) const {
-	ofPolyline polyline;
-	if(!failed) {
-		vector<int> indices = getFeatureIndices(feature);
-		for(int i = 0; i < indices.size(); i++) {
-			int cur = indices[i];
-//			if(useInvisible || getVisibility(cur)) {
-				polyline.addVertex(points[cur]);
-//			}
-		}
-		switch(feature) {
-			case LEFT_EYE:
-			case RIGHT_EYE:
-			case OUTER_MOUTH:
-			case INNER_MOUTH:
-			case FACE_OUTLINE:
-				polyline.close();
-		}
-	}
-	return polyline;
-}
 

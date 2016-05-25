@@ -39,8 +39,8 @@ void ofApp::draw(){
     ofDrawBitmapString("Tracker thread framerate : "+ofToString(tracker.getThreadFps()), 10, 40);
     
 #ifndef __OPTIMIZE__
-    ofSetColor(ofColor::Red);
+    ofSetColor(ofColor::red);
     ofDrawBitmapString("Warning! Run this app in release mode to get proper performance!",10,60);
-    ofSetColor(ofColor::White);
+    ofSetColor(ofColor::white);
 #endif
 }
