@@ -4,11 +4,9 @@
 ofxFaceTracker2Instance::ofxFaceTracker2Instance(int label,
                                                  dlib::full_object_detection shape,
                                                  dlib::rectangle rectangle,
-                                                 ofxCv::Intrinsics & intrinsics,
                                                  ofxFaceTracker2InputInfo & info)
 : landmarks(ofxFaceTracker2Landmarks(shape, info))
 , info(info)
-, intrinsics(intrinsics)
 {
     this->label = label;
     this->rectangle = rectangle;
@@ -30,7 +28,9 @@ ofRectangle ofxFaceTracker2Instance::getBoundingBox() const {
                                   rectangle.height());
 }
 
-
+int ofxFaceTracker2Instance::getLabel(){
+    return label;
+}
 
 ofVec2f ofxFaceTracker2Instance::transformPosePosition(ofVec3f p){
     if(!poseCalculated){
@@ -68,7 +68,7 @@ void ofxFaceTracker2Instance::loadPoseMatrix(){
 }
 
 void ofxFaceTracker2Instance::loadPoseProjectionMatrix(){
-    intrinsics.loadProjectionMatrix(1, 200000);
+    info.intrinsics.loadProjectionMatrix(1, 200000);
 }
 
 // Estimates the heads 3d position and orientation

@@ -74,17 +74,14 @@ public:
     vector<ofxFaceTracker2Instance> & getInstances();
     
 protected:
-    ofxCv::Tracker<cv::Rect> faceRectanglesTracker;
     vector<ofxFaceTracker2Instance> instances;
+    
+    ofxCv::Tracker<cv::Rect> faceRectanglesTracker;
     
     void runFaceDetector(bool lockMutex);
     void runLandmarkDetector();
         
     void updateTrackerInstances(vector<dlib::rectangle> rectangles);
-    
-    bool intrinsicsCalculated;
-    void calculateIntrinsics();
-    
     
     void threadedFunction();
     void rotate_90n(cv::Mat &src, cv::Mat &dst, int angle);
@@ -114,7 +111,6 @@ protected:
     int thread_fps;
     
     ofxFaceTracker2InputInfo info;
-    ofxCv::Intrinsics intrinsics;
 
 	cv::Rect roi;
 };

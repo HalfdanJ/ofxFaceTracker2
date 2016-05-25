@@ -13,10 +13,10 @@ public:
     ofxFaceTracker2Instance(int label,
                             dlib::full_object_detection shape,
                             dlib::rectangle rectangle,
-                            ofxCv::Intrinsics & intrinsics,
                             ofxFaceTracker2InputInfo & info);
     
     
+    int getLabel();
     
     /// Transforms a 3D point in pose coordinate space to 2D point in screen space
     ofVec2f transformPosePosition(ofVec3f p);
@@ -38,10 +38,6 @@ public:
     ofxFaceTracker2Landmarks & getLandmarks();
     
 private:
-    
-    ofxCv::Intrinsics & intrinsics;
-    
-    
     int label;
     ofxFaceTracker2Landmarks landmarks;
     dlib::rectangle rectangle;

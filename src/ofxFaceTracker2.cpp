@@ -54,6 +54,7 @@ void ofxFaceTracker2::setup(string dataPath) {
 		startThread();
 	}
     
+    // Setup tracker keeping persistent id's of rectangles
     faceRectanglesTracker.setMaximumDistance(200);
 }
 
@@ -87,9 +88,8 @@ void ofxFaceTracker2::exitEvent(ofEventArgs& e){
 bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	clock_t start = clock() ;
     
-    
+    // Prepare image, resize if required
 	float aspect = (float)image.rows/image.cols;
-
 	if(landmarkDetectorImageSize == -1 || image.rows*image.cols <= landmarkDetectorImageSize) {
 		im = image;
 	} else {
@@ -97,13 +97,12 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 		resize(image, im, cv::Size(), scale,scale, cv::INTER_NEAREST);
 	}
     
+    // Update info object
     if(info.inputWidth != image.cols || info.inputHeight != image.rows){
         info = ofxFaceTracker2InputInfo(image.cols, image.rows, im.cols, im.rows, imageRotation);
     }
-                                        
-                                        
 
-    // Handle image rotation madness
+    // Rotate image if required
 	if(imageRotation){
 		rotate_90n(im, im, imageRotation);
 	}
@@ -123,10 +122,6 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	imageDirty = true;
     
     
-    if(!intrinsicsCalculated){
-        calculateIntrinsics();
-    }
-
 	if(!threaded){
         // If the tracker runs without background thread, then run face detector now
         runFaceDetector(false);
@@ -234,7 +229,7 @@ void ofxFaceTracker2::runLandmarkDetector(){
             
             dlib::full_object_detection shape = sp(dlibimg, rect);
 
-            instances.push_back(ofxFaceTracker2Instance(label, shape, rect, intrinsics, info));
+            instances.push_back(ofxFaceTracker2Instance(label, shape, rect, info));
         }
         
         numFaces = faceRectanglesTracker.getCurrentLabels().size();
@@ -351,27 +346,6 @@ int ofxFaceTracker2::getThreadFps()const{
 int ofxFaceTracker2::size() const {
 	return instances.size();
 }
-
-
-void ofxFaceTracker2::calculateIntrinsics(){
-    float aov = 50;
-    float focalLength = info.inputWidth * ofDegToRad(aov);
-    float opticalCenterX = info.inputWidth/2;
-    float opticalCenterY = info.inputHeight/2;
-    
-    cv::Mat1d projectionMat = cv::Mat::zeros(3,3,CV_32F);
-    projectionMat(0,0) = focalLength;
-    projectionMat(1,1) = focalLength;
-    projectionMat(0,2) = opticalCenterX;
-    projectionMat(1,2) = opticalCenterY;
-    projectionMat(2,2) = 1;
-    
-    Size2i imageSize(info.inputWidth, info.inputHeight);
-    intrinsics.setup(projectionMat, imageSize);
-   
-    intrinsicsCalculated = true;
-}
-
 
 
 void ofxFaceTracker2::rotate_90n(cv::Mat &src, cv::Mat &dst, int angle)
