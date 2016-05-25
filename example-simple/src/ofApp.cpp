@@ -11,7 +11,6 @@ void ofApp::setup(){
     
     // Setup tracker
     tracker.setup();
-    tracker.setFaceRotation(90);
 }
 
 //--------------------------------------------------------------

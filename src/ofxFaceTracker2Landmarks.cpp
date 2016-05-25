@@ -9,9 +9,8 @@ ofxFaceTracker2Landmarks::ofxFaceTracker2Landmarks(dlib::full_object_detection s
 
 ofVec2f ofxFaceTracker2Landmarks::getImagePoint(int i) const {
     ofVec3f p = ofVec3f(shape.part(i).x(),
-                        shape.part(i).y(),0);
+                        shape.part(i).y(), 0);
     p = p * info.rotationMatrix;
-    ofLog()<<info.imageRotation;
     
     return ofVec2f(p);
 }

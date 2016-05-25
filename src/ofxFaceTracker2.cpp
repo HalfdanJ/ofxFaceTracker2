@@ -97,16 +97,16 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 		resize(image, im, cv::Size(), scale,scale, cv::INTER_NEAREST);
 	}
     
+    // Rotate image if required
+	if(imageRotation){
+		rotate_90n(im, im, imageRotation);
+	}
+
     // Update info object
     if(info.inputWidth != image.cols || info.inputHeight != image.rows){
         info = ofxFaceTracker2InputInfo(image.cols, image.rows, im.cols, im.rows, imageRotation);
     }
 
-    // Rotate image if required
-	if(imageRotation){
-		rotate_90n(im, im, imageRotation);
-	}
-    
 	if(threaded) mutex.lock();
 
 	roi = _roi;
