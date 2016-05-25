@@ -15,7 +15,7 @@ public:
                             dlib::rectangle rectangle,
                             ofxFaceTracker2InputInfo & info);
     
-    
+    /// Returns unique label for face. Labels are persistent until face disappears
     int getLabel();
     
     /// Transforms a 3D point in pose coordinate space to 2D point in screen space
@@ -33,8 +33,7 @@ public:
     /// Get the bounding box
     ofRectangle getBoundingBox() const;
     
-    vector<int> consecutive(int start, int end);
-    
+    /// Returns landmarks object for accessing landmark details
     ofxFaceTracker2Landmarks & getLandmarks();
     
 private:
@@ -42,12 +41,11 @@ private:
     ofxFaceTracker2Landmarks landmarks;
     dlib::rectangle rectangle;
     
-    void calculatePoseMatrix();
-
     bool poseCalculated;
     cv::Mat1d poseProjection;
     cv::Mat poservec, posetvec;
-    
     ofxFaceTracker2InputInfo & info;
+    
+    void calculatePoseMatrix();
 };
 

@@ -21,8 +21,6 @@ public:
         FACE_OUTLINE, ALL_FEATURES
     };
     
-    
-    
     ofxFaceTracker2Landmarks(dlib::full_object_detection shape, ofxFaceTracker2InputInfo & info);
     
     /// Get a list of 2D points in screen space with all the face landmarks found
@@ -38,23 +36,16 @@ public:
     /// Get poly line of a feature
     ofPolyline getImageFeature(Feature feature) const;
     
-    
-    
     ofMesh getImageMesh() const;
     
     template <class T> ofMesh getMesh(vector<T> points) const;
     
-    
 private:
-    
     dlib::full_object_detection shape;
     ofxFaceTracker2InputInfo & info;
     
-    static std::vector<int> consecutive(int start, int end);    
-    
-    
+    static std::vector<int> consecutive(int start, int end);
     static vector<int> getFeatureIndices(Feature feature);
-    
     
     template <class T>
     ofPolyline getFeature(Feature feature, vector<T> points) const;

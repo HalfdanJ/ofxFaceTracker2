@@ -39,7 +39,7 @@ void ofxFaceTracker2::setup(string dataPath) {
 	// Load landmark data file
 	ofFile dataFile = ofFile(dataPath);
 	if(dataFile.exists()){
-		dlib::deserialize(dataFile.path()) >> sp;
+		dlib::deserialize(dataFile.path()) >> landmarkDetector;
 	} else {
 		throw std::runtime_error("\
                                  ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found at "+dataFile.getAbsolutePath()+".\
@@ -114,6 +114,7 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 		roi = cv::Rect(0, 0, im.cols, im.rows);
 	}
 
+    // Do color convertion to grayscale if required
     if(im.type() == CV_8UC1) {
         im.copyTo(gray);
     } else {
@@ -122,8 +123,8 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	imageDirty = true;
     
     
-	if(!threaded){
-        // If the tracker runs without background thread, then run face detector now
+    // If the tracker runs without background thread, then run face detector now
+    if(!threaded){
         runFaceDetector(false);
 	}
 
@@ -132,9 +133,7 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 
 	if(threaded) mutex.unlock();
 
-
 	return !failed;
-
 }
 
 // ----------------
@@ -168,11 +167,11 @@ void ofxFaceTracker2::runFaceDetector(bool lockMutex){
     if(lockMutex) mutex.lock();
     
     // Make sure roi is within boundaries
-    detectorRoi = roi;
-    detectorRoi.x = (int)ofClamp(detectorRoi.x,0,gray.cols);
-    detectorRoi.y = (int)ofClamp(detectorRoi.y,0,gray.rows);
-    detectorRoi.width = (int)ofClamp(detectorRoi.width,1,gray.cols - detectorRoi.x);
-    detectorRoi.height = (int)ofClamp(detectorRoi.height,1,gray.rows- detectorRoi.y);
+    detectorRoi =       roi;
+    detectorRoi.x =     (int) ofClamp(detectorRoi.x, 0, gray.cols);
+    detectorRoi.y =     (int) ofClamp(detectorRoi.y, 0, gray.rows);
+    detectorRoi.width = (int) ofClamp(detectorRoi.width, 1, gray.cols - detectorRoi.x);
+    detectorRoi.height= (int) ofClamp(detectorRoi.height,1, gray.rows - detectorRoi.y);
     
     float scale = 1;
 
@@ -192,15 +191,14 @@ void ofxFaceTracker2::runFaceDetector(bool lockMutex){
     dlib::cv_image<unsigned char> cvimg(threadGray);
     std::vector<dlib::rectangle> detectedFaceRectangles = faceDetector(cvimg);
     
-    
     if(lockMutex) mutex.lock();
     
     vector<cv::Rect> rects;
     // Store face detector data
     float s = 1.0f/scale;
     for(auto rect : detectedFaceRectangles){
-        rects.push_back(cv::Rect(detectorRoi.x + rect.left()   * s,
-                                 detectorRoi.y + rect.top()    * s,
+        rects.push_back(cv::Rect(detectorRoi.x + rect.left() * s,
+                                 detectorRoi.y + rect.top()  * s,
                                  rect.width()  * s,
                                  rect.height() * s));
     }
@@ -221,17 +219,17 @@ void ofxFaceTracker2::runLandmarkDetector(){
         instances.clear();
         instances.reserve(faceRectanglesTracker.getCurrentLabels().size());
         
-        failed = false;
-        
         for(auto label : faceRectanglesTracker.getCurrentLabels()){
             auto cvrect = faceRectanglesTracker.getCurrent(label);
-            auto rect = dlib::rectangle(cvrect.x, cvrect.y, cvrect.x+cvrect.width, cvrect.y + cvrect.height);
+            auto rect = dlib::rectangle(cvrect.x, cvrect.y, cvrect.x + cvrect.width, cvrect.y + cvrect.height);
             
-            dlib::full_object_detection shape = sp(dlibimg, rect);
+            // Do the actual landmark detection
+            dlib::full_object_detection shape = landmarkDetector(dlibimg, rect);
 
             instances.push_back(ofxFaceTracker2Instance(label, shape, rect, info));
         }
         
+        failed = false;
         numFaces = faceRectanglesTracker.getCurrentLabels().size();
     }
 }

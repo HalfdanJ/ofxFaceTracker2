@@ -91,7 +91,7 @@ protected:
     bool imageDirty;
 
     dlib::frontal_face_detector faceDetector;
-    dlib::shape_predictor sp;
+    dlib::shape_predictor landmarkDetector;
     
     std::vector< dlib::full_object_detection > facesObjects;
     

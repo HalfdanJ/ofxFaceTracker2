@@ -91,7 +91,6 @@ ofPolyline ofxFaceTracker2Landmarks::getFeature(Feature feature, vector<T> point
     return polyline;
 }
 
-
 vector<int> ofxFaceTracker2Landmarks::consecutive(int start, int end) {
     int n = end - start;
     vector<int> result(n);
@@ -100,13 +99,6 @@ vector<int> ofxFaceTracker2Landmarks::consecutive(int start, int end) {
     }
     return result;
 }
-
-
-
-
-
-
-
 
 template <class T>
 ofMesh ofxFaceTracker2Landmarks::getMesh(vector<T> points) const {
