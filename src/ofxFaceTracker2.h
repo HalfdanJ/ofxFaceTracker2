@@ -35,11 +35,11 @@ public:
     }
     
     /// Draw a debug drawing of the detected face
-    void draw(int x=0, int y=0) const;
-    void draw(int x, int y, int w, int h) const;
+    void drawDebug(int x=0, int y=0) const;
+    void drawDebug(int x, int y, int w, int h) const;
 
     /// Draw a debug drawing of the pose of the detected face
-    void drawPose(int face=0);
+    void drawDebugPose();
 
     /// Stop the background tracker thread (called automatically on app exit)
     void stop();

@@ -23,15 +23,16 @@ public:
     
     ofxFaceTracker2Landmarks(dlib::full_object_detection shape, ofxFaceTracker2InputInfo & info);
     
-    /// Get a list of 2D points in screen space with all the face landmarks found
+    /// Get specific 2D image point from the 68 landmarks coordinates
+    /// Coordinate is returned in input image size
+    ofVec2f getImagePoint(int i) const;
+    
+    /// Get a list of 2D points with all 68 face landmarks found.
+    /// Coordinates are returned in input image size
     vector<ofVec2f> getImagePoints() const;
     
     /// Like getImagePoints, just returns the points as cv:Point2f
     vector<cv::Point2f> getCvImagePoints() const;
-    
-    
-    /// Get specific 2D image point
-    ofVec2f getImagePoint(int i) const;
     
     /// Get poly line of a feature
     ofPolyline getImageFeature(Feature feature) const;

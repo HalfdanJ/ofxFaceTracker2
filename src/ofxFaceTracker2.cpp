@@ -46,8 +46,10 @@ void ofxFaceTracker2::setup(string dataPath) {
                                  \n\n\
                                  Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
 	}
-
+    
 	thread_fps = 0;
+    
+    
 
 	// Start the background thread
 	if(threaded){
@@ -245,11 +247,11 @@ vector<ofxFaceTracker2Instance> & ofxFaceTracker2::getInstances(){
 
 // ----------------
 
-void ofxFaceTracker2::draw(int x, int y) const{
-    draw(x, y, info.inputWidth, info.inputHeight);
+void ofxFaceTracker2::drawDebug(int x, int y) const{
+    drawDebug(x, y, info.inputWidth, info.inputHeight);
 }
 
-void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
+void ofxFaceTracker2::drawDebug(int x, int y, int _w, int _h) const{
     if(failed) {
         return;
     }
@@ -299,22 +301,22 @@ void ofxFaceTracker2::draw(int x, int y, int _w, int _h) const{
     ofPopMatrix();
 }
 
-void ofxFaceTracker2::drawPose(int face) {
-    if(size() <= face) return;
-    
-    ofPushView();
-    ofPushStyle();
-    getInstances()[face].loadPoseMatrix();
-    
-    ofSetColor(255,0,0);
-    ofDrawLine(0,0,0, 200,0,0);
-    ofSetColor(0,255,0);
-    ofDrawLine(0,0,0, 0,100,0);
-    ofSetColor(0,0,255);
-	ofDrawLine(0,0,0, 0,0,-100);
-
-	ofPopStyle();
-	ofPopView();
+void ofxFaceTracker2::drawDebugPose() {
+    for(auto instance : getInstances()){
+        ofPushView();
+        ofPushStyle();
+        instance.loadPoseMatrix();
+        
+        ofSetColor(255,0,0);
+        ofDrawLine(0,0,0, 200,0,0);
+        ofSetColor(0,255,0);
+        ofDrawLine(0,0,0, 0,100,0);
+        ofSetColor(0,0,255);
+        ofDrawLine(0,0,0, 0,0,-100);
+        ofDrawSphere(0, 0, 100);
+        ofPopStyle();
+        ofPopView();
+    }
 }
 
 void ofxFaceTracker2::setFaceOrientation(ofOrientation orientation){

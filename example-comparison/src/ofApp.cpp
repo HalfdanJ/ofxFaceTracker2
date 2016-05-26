@@ -7,7 +7,10 @@ void ofApp::setup(){
         
     tracker.setup();
 
+    
+    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../example-data/");
     tracker2.setup();
+    ofRestoreWorkingDirectoryToDefault();
 }
 
 

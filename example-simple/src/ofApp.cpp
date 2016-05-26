@@ -29,10 +29,10 @@ void ofApp::draw(){
     grabber.draw(0, 0);
     
     // Draw tracker landmarks
-    tracker.draw();
+    tracker.drawDebug();
     
     // Draw estimated 3d pose
-    tracker.drawPose();
+    tracker.drawDebugPose();
     
     // Draw text UI
     ofDrawBitmapString("Framerate : "+ofToString(ofGetFrameRate()), 10, 20);
