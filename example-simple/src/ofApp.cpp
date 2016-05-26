@@ -35,8 +35,8 @@ void ofApp::draw(){
     tracker.drawDebugPose();
     
     // Draw text UI
-    ofDrawBitmapString("Framerate : "+ofToString(ofGetFrameRate()), 10, 20);
-    ofDrawBitmapString("Tracker thread framerate : "+ofToString(tracker.getThreadFps()), 10, 40);
+    ofDrawBitmapStringHighlight("Framerate : "+ofToString(ofGetFrameRate()), 10, 20);
+    ofDrawBitmapStringHighlight("Tracker thread framerate : "+ofToString(tracker.getThreadFps()), 10, 40);
     
 #ifndef __OPTIMIZE__
     ofSetColor(ofColor::red);

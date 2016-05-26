@@ -47,7 +47,7 @@ public:
         
         
         // Calculate intrinsics
-        float aov = 50;
+        float aov = 280;
         float focalLength = inputWidth * ofDegToRad(aov);
         float opticalCenterX = inputWidth/2;
         float opticalCenterY = inputHeight/2;

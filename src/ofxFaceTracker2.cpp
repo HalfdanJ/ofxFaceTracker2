@@ -308,12 +308,11 @@ void ofxFaceTracker2::drawDebugPose() {
         instance.loadPoseMatrix();
         
         ofSetColor(255,0,0);
-        ofDrawLine(0,0,0, 200,0,0);
+        ofDrawLine(0,0,0, 100,0,0);
         ofSetColor(0,255,0);
         ofDrawLine(0,0,0, 0,100,0);
         ofSetColor(0,0,255);
         ofDrawLine(0,0,0, 0,0,-100);
-        ofDrawSphere(0, 0, 100);
         ofPopStyle();
         ofPopView();
     }

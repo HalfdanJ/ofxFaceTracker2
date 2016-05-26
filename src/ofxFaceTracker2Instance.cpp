@@ -105,7 +105,7 @@ void ofxFaceTracker2Instance::calculatePoseMatrix(){
     const cv::Point3f P3D_STOMMION( 0.,-75.0,10.0);
     const cv::Point3f P3D_MENTON( 0.,-133.0, 0.);
     
-    float aov = 50;
+    float aov = 280;
     float focalLength = info.inputWidth * ofDegToRad(aov);
     float opticalCenterX = info.inputWidth/2;
     float opticalCenterY = info.inputHeight/2;
