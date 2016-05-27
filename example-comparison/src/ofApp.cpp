@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    grabber.setup(640, 480);
+    grabber.setup(1280, 720);
         
     tracker.setup();
 
@@ -13,11 +13,6 @@ void ofApp::setup(){
     ofRestoreWorkingDirectoryToDefault();
 }
 
-
-void ofApp::exit() {
-    tracker2.waitForThread();
-    tracker2.stopThread();
-}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -49,26 +44,26 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofSetColor(255);
+    // Draw camera image
+    ofSetColor(180);
     grabber.draw(0,0);
     
+    
+    // Draw original ofxFaceTracker
     ofSetColor(255,0,0);
     tracker.draw();
     
+    // Draw new ofxFaceTracker2
     ofSetColor(255);
-    tracker2.draw();
+    tracker2.drawDebug();
     
-    ofDrawBitmapString("tracker thread fps "+ofToString(tracker2.getThreadFps()), 20, 60);
-
-    
-    
-    ofSetColor(255,255,255);
-    
-    
+    // Draw graph showing their processing time
+    ofPushMatrix();
     ofTranslate(0, 490);
     
     ofSetColor(30);
     ofDrawRectangle(0, 0, 300, 200);
+    ofDrawBitmapStringHighlight("Tracker processing time", 10,15);
     
     ofSetColor(255,0,0);
     if(oldTracker.size() > 0){
@@ -86,63 +81,9 @@ void ofApp::draw(){
         }
         glEnd();
     }
+    ofPopMatrix();
     
-    ofSetColor(255,255,255);
-
-
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
+    // Draw debug text
+    ofDrawBitmapStringHighlight("ofxFaceTracker", 10, 20, ofColor::black, ofColor::red);
+    ofDrawBitmapStringHighlight("ofxFaceTracker2", 10, 40);    
 }

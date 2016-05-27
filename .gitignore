@@ -25,3 +25,12 @@ build/
 !data/
 .DS_Store
 example-data/shape_predictor_68_face_landmarks.dat
+
+config.make
+project.pbxproj
+Makefile
+Project.xcconfig
+openFrameworks-Info.plist
+*.xcodeproj
+project.xcworkspace
+*.xcscheme
