@@ -19,7 +19,7 @@ meta:
 	ADDON_DESCRIPTION =
 	ADDON_AUTHOR = Jonas Jongejan
 	ADDON_TAGS = "computer vision"
-	# ADDON_URL = http://github.com/openframeworks/openFrameworks
+	ADDON_URL = http://github.com/halfdanj/ofxFaceTracker2
 
 common:
 	# dependencies with other addons, a list of them separated by spaces
@@ -64,7 +64,6 @@ common:
 
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
-	#ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
 	ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
 
 	# when parsing the file system looking for include paths exclude this for all or
@@ -73,15 +72,7 @@ common:
 
 	ADDON_INCLUDES = libs/dlib/include
 	ADDON_INCLUDES += src
-
-win_cb:
-	# when parsing the file system looking for sources exclude this for all or
-	# a specific platform
-
-vs:
-	# when parsing the file system looking for sources exclude this for all or
-	# a specific platform
-
+	
 osx:
 	ADDON_LIBS = libs/dlib/lib/osx/libdlib.a
 
