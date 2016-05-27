@@ -2,37 +2,44 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    grabber.setup(800, 600);
-    tracker.setup();
+    // Setup grabber
+    grabber.setup(1280,720);
     
-    ofEnableAlphaBlending();
+    // All examples share data files from example-data, so setting data path to this folder
+    // This is only relevant for the example apps
+    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../example-data/");
+    
+    // Setup tracker
+    tracker.setup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     grabber.update();
+    
+    // Update tracker when there are new frames
     if(grabber.isFrameNew()){
-        tracker.update(ofxCv::toCv(grabber));
+        tracker.update(grabber);
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    // Draw the grabber
+    // Draw camera image
     grabber.draw(0,0);
     
     ofPushStyle();
-    for(int i=0;i<tracker.size();i++){
-        
-        // Draw debug pose
-        tracker.drawPose(i);
-        
+    
+    // Draw debug pose
+    tracker.drawDebugPose();
+    
+    // Iterate over all faces
+    for(auto face : tracker.getInstances()){
         // Apply the pose matrix
         ofPushView();
-        tracker.loadPoseMatrix(i);
+        face.loadPoseMatrix();
         
         // Now position 0,0,0 is at the forehead
-        
         ofSetColor(255,0,0,50);
         ofDrawRectangle(0, 0, 200, 200);
 
@@ -47,11 +54,10 @@ void ofApp::draw(){
         ofRotate(90, 0, 1, 0);
         ofDrawRectangle(0, 0, 200, 200);
         ofPopMatrix();
-
         
         ofPopView();
     }
     ofPopStyle();
     
-    ofDrawBitmapString("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
+    ofDrawBitmapStringHighlighted("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
 }
