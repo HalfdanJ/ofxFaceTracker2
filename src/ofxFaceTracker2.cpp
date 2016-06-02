@@ -281,14 +281,11 @@ void ofxFaceTracker2::drawDebug(int x, int y, int _w, int _h) const{
             instance.getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::INNER_MOUTH).draw();
             instance.getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::OUTER_MOUTH).draw();
             instance.getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::JAW).draw();
-        }
-        
-        // Draw bounding boxes
-        for(auto label : faceRectanglesTracker.getCurrentLabels()){
-            auto rect = ofxCv::toOf(faceRectanglesTracker.getCurrent(label));
+            
+            auto rect = instance.getBoundingBox();
             auto p = rect.getTopLeft();
             ofSetColor(255);
-            ofDrawBitmapStringHighlight("face "+ofToString(label), p.x+4, p.y+14);
+            ofDrawBitmapStringHighlight("face "+ofToString(instance.getLabel()), p.x+4, p.y+14);
             
             ofPushStyle();
             ofSetColor(255,0,0);
