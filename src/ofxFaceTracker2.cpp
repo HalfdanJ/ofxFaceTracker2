@@ -105,7 +105,7 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	}
 
     // Update info object
-    if(info.inputWidth != image.cols || info.inputHeight != image.rows){
+    if(info.inputWidth != image.cols || info.inputHeight != image.rows || info.imageRotation != imageRotation){
         info = ofxFaceTracker2InputInfo(image.cols, image.rows, im.cols, im.rows, imageRotation);
     }
 

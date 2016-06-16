@@ -22,10 +22,11 @@ ofxFaceTracker2Landmarks & ofxFaceTracker2Instance::getLandmarks(){
 }
 
 ofRectangle ofxFaceTracker2Instance::getBoundingBox() const {
-    return ofRectangle(rectangle.left(),
-                                  rectangle.top(),
-                                  rectangle.width(),
-                                  rectangle.height());
+    ofVec3f tl = ofVec3f(rectangle.tl_corner().x(), rectangle.tl_corner().y(), 0) * info.rotationMatrix;
+    ofVec3f br = ofVec3f(rectangle.br_corner().x(), rectangle.br_corner().y(), 0) * info.rotationMatrix;
+    ofVec3f delta = br-tl;
+
+    return ofRectangle(tl.x, tl.y, delta.x, delta.y);
 }
 
 int ofxFaceTracker2Instance::getLabel(){
