@@ -7,7 +7,7 @@ void ofApp::setup(){
     
     // All examples share data files from example-data, so setting data path to this folder
     // This is only relevant for the example apps
-    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../example-data/");
+    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../model/");
     
     // Setup tracker
     tracker.setup();
@@ -59,5 +59,5 @@ void ofApp::draw(){
     }
     ofPopStyle();
     
-    ofDrawBitmapStringHighlighted("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
+    ofDrawBitmapStringHighlight("Tracker fps: "+ofToString(tracker.getThreadFps()), 10, 20);
 }
