@@ -24,7 +24,9 @@ bin/
 build/
 !data/
 .DS_Store
-example-data/shape_predictor_68_face_landmarks.dat
+shape_predictor_68_face_landmarks.dat
+*.idea
+*.iml
 
 config.make
 project.pbxproj
@@ -34,3 +36,10 @@ openFrameworks-Info.plist
 *.xcodeproj
 project.xcworkspace
 *.xcscheme
+
+*.gradle
+gradlew
+gradlew.bat
+gradle
+res
+
