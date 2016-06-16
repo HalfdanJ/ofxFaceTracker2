@@ -33,7 +33,7 @@ common:
 
 	# any special flag that should be passed to the compiler when using this
 	# addon
-	#ADDON_CFLAGS = -DDLIB_NO_GUI_SUPPORT
+	ADDON_CFLAGS = -O2
 
 	# any special flag that should be passed to the linker when using this
 	# addon, also used for system libraries with -lname
@@ -55,7 +55,7 @@ common:
 
 	# some addons need resources to be copied to the bin/data folder of the project
 	# specify here any files that need to be copied, you can use wildcards like * and ?
-	# ADDON_DATA =
+	ADDON_DATA = model/
 
 
 	# when parsing the file system looking for libraries exclude this for all or
@@ -72,7 +72,7 @@ common:
 
 	ADDON_INCLUDES = libs/dlib/include
 	ADDON_INCLUDES += src
-	
+
 osx:
 	ADDON_LIBS = libs/dlib/lib/osx/libdlib.a
 
