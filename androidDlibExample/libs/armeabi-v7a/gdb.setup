@@ -1,7 +1,0 @@
-set solib-search-path /Users/jonas/Development/openframeworks/openFrameworks/apps/myApps/androidDlibExample/obj/local/armeabi-v7a:/Users/jonas/Development/openframeworks/openFrameworks/apps/myApps/androidDlibExample/libs/armeabi-v7a
-set sysroot /Users/jonas/Development/Android/android-ndk-r10e/platforms/android-19/arch-arm/
-directory /Users/jonas/Development/Android/android-ndk-r10e/platforms/android-19/arch-arm/usr/include
-directory /Users/jonas/Development/openframeworks/openFrameworks/apps/myApps/androidDlibExample/src
-directory /Users/jonas/Development/Android/android-ndk-r10e/sources/cxx-stl/system
-directory /Users/jonas/Development/openframeworks/openFrameworks/apps/myApps/androidDlibExample/libs/armeabi-v7a
-
