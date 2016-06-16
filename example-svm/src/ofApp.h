@@ -14,8 +14,7 @@ typedef dlib::probabilistic_decision_function<kernel_type> probabilistic_funct_t
 typedef dlib::normalized_function<probabilistic_funct_type> pfunct_type;
 
 
-class ofApp : public ofBaseApp{
-    
+class ofApp : public ofBaseApp {
 public:
     void setup();
     void update();
