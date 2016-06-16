@@ -41,10 +41,10 @@ void ofxFaceTracker2::setup(string dataPath) {
 	if(dataFile.exists()){
 		dlib::deserialize(dataFile.path()) >> landmarkDetector;
 	} else {
-		throw std::runtime_error("\
-                                 ofxFaceTracker2: shape_predictor_68_face_landmarks.dat data file not found at "+dataFile.getAbsolutePath()+".\
-                                 \n\n\
-                                 Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2");
+        ofLogError("ofxFaceTracker2")<<"shape_predictor_68_face_landmarks.dat data file not found at "<<dataFile.getAbsolutePath()<<"."
+                                 <<"\n\n"
+                                 <<"Please download and extract it from http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2";
+		throw;
 	}
     
 	thread_fps = 0;
