@@ -212,13 +212,13 @@ void ofxFaceTracker2::runFaceDetector(bool lockMutex){
 // ----------------
 
 void ofxFaceTracker2::runLandmarkDetector(){
-    if(faceRectanglesTracker.getCurrentLabels().size() == 0){
-        failed = true;
-        numFaces = 0;
-    } else {
+    failed = true;
+    numFaces = 0;
+    instances.clear();
+
+    if(faceRectanglesTracker.getCurrentLabels().size() != 0){
         dlib::cv_image<unsigned char> dlibimg(gray);
 
-        instances.clear();
         instances.reserve(faceRectanglesTracker.getCurrentLabels().size());
         
         for(auto label : faceRectanglesTracker.getCurrentLabels()){
