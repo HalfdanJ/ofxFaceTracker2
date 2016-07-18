@@ -33,7 +33,7 @@ function prepare() {
 
 # executed inside the lib src dir
 function build() {
-    if [ "$TYPE" == "osx" ] ; then
+  if [ "$TYPE" == "osx" ] ; then
 		cd dlib
 		#if [ -d  builds ]; then
 		mkdir build
@@ -44,7 +44,7 @@ function build() {
 		cmake --build . --config Release
 		cd ../../
 	elif [ "$TYPE" == "android" ] ; then
-		ndk-build -j4 NDK_DEBUG=0 NDK_PROJECT_PATH=.
+		${NDK_ROOT}/ndk-build -j4 NDK_DEBUG=0 NDK_PROJECT_PATH=.
 
 	fi
 }
@@ -65,13 +65,12 @@ function copy() {
 	    cp -v dlib/build/libdlib.a $1/lib/osx/libdlib.a
 	elif [ "$TYPE" == "android" ] ; then
 	    cp -vr dlib/ $1/include/dlib
-		rm -rf $1/include/dlib/build
+			rm -rf $1/include/dlib/build
 	    rm -rf $1/include/dlib/test
 	    rm  $1/include/dlib/all_gui.cpp
 
 	    cp -vr obj/local/armeabi-v7a/libdlib.a $1/lib/android/armeabi-v7a/libdlib.a
 	    cp -vr obj/local/x86/libdlib.a $1/lib/android/x86/libdlib.a
-	    cp -vr obj/local/x86_64/libdlib.a $1/lib/android/x86_64/libdlib.a
 	fi
 }
 
