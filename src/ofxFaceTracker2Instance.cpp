@@ -25,6 +25,15 @@ ofRectangle ofxFaceTracker2Instance::getBoundingBox() const {
     ofVec3f tl = ofVec3f(rectangle.tl_corner().x(), rectangle.tl_corner().y(), 0) * info.rotationMatrix;
     ofVec3f br = ofVec3f(rectangle.br_corner().x(), rectangle.br_corner().y(), 0) * info.rotationMatrix;
     ofVec3f delta = br-tl;
+    if(delta.x < 0){
+        tl.x += delta.x;
+        delta.x *= -1;
+    }
+
+    if(delta.y < 0){
+        tl.y += delta.y;
+        delta.y *= -1;
+    }
 
     return ofRectangle(tl.x, tl.y, delta.x, delta.y);
 }
