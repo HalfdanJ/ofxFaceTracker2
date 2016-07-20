@@ -11,7 +11,7 @@ void ofApp::setup(){
 	// Make sure its running in mono pixels mode for pixels (much faster)
 	grabber.setPixelFormat(OF_PIXELS_MONO);
 
-	// High res camera, yeah
+	// High res camera
 	grabber.setup(1280,960);
 	tracker.setup();
 
@@ -39,12 +39,11 @@ void ofApp::update(){
 		cv::Mat cvImg = ofxCv::toCv(grabber);
 		tracker.update(cvImg);
 
-		fbo.begin();
-
-		grabber.draw(0,0);
-		tracker.drawDebug();
-		tracker.drawDebugPose();
-		fbo.end();
+		fbo.begin(); {
+			grabber.draw(0, 0);
+			tracker.drawDebug();
+			tracker.drawDebugPose();
+		} fbo.end();
 	}
 }
 
@@ -102,6 +101,7 @@ void ofApp::draw(){
 	ofDrawBitmapString("thread fps: " + ofToString(tracker.getThreadFps()),20,60);
 }
 
+// Watch for oriantation change of the app
 void ofApp::deviceOrientationChanged(ofOrientation newOrientation){
 	appOrientation = ofOrientationToDegrees(newOrientation);
 }
@@ -169,20 +169,5 @@ void ofApp::resume(){
 
 //--------------------------------------------------------------
 void ofApp::reloadTextures(){
-
-}
-
-//--------------------------------------------------------------
-bool ofApp::backPressed(){
-	return false;
-}
-
-//--------------------------------------------------------------
-void ofApp::okPressed(){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::cancelPressed(){
 
 }

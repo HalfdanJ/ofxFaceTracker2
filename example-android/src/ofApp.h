@@ -43,7 +43,4 @@ class ofApp : public ofxAndroidApp, public ofThread{
 		void resume();
 		void reloadTextures();
 
-		bool backPressed();
-		void okPressed();
-		void cancelPressed();
 };
