@@ -19,5 +19,5 @@ Another big difference is this addon supports multiple faces, whereas the old ad
 
 ## Installation
 - The addon depends on [ofxCv addon](https://github.com/kylemcdonald/ofxCv).
-- All apps need a landsmarks training data file. It can be downloaded here [shape_predictor_68_face_landmarks.dat](http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2), and should be put unzipped in `bin/data` folder of your app or examples. 
+- All apps need a landsmarks training data file. It can either be downloaded using the command `sh download-model.sh`, or manually be downloaded here [shape_predictor_68_face_landmarks.dat](http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2), and should be put unzipped in `model` for the examples to work, or in `bin/data` folder of your app. 
 
