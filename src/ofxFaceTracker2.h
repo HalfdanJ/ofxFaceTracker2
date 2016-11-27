@@ -31,7 +31,7 @@ public:
 
     template <class T>
     bool update(T& image, cv::Rect roi=cv::Rect(0,0,0,0)){
-        update(ofxCv::toCv(image), roi);
+        return update(ofxCv::toCv(image), roi);
     }
     
     /// Draw a debug drawing of the detected face
