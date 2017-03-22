@@ -81,3 +81,8 @@ android/armeabi-v7a:
 
 android/x86:
 	ADDON_LIBS = libs/dlib/lib/android/x86/libdlib.a
+
+vs:
+	ADDON_LIBS = libs/dlib/lib/win/Release/dlib.lib
+
+
