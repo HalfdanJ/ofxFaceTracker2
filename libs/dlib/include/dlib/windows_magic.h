@@ -7,6 +7,12 @@
 
 #ifdef WIN32
 
+#ifndef CreateSemaphore
+#ifdef UNICODE
+#define CreateSemaphore CreateSemaphoreW
+#endif
+#endif
+
 // This file contains all the magical #defines you have to setup  before you
 // include the windows header files.  
 
