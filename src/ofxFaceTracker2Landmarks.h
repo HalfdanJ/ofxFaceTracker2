@@ -25,11 +25,11 @@ public:
     
     /// Get specific 2D image point from the 68 landmarks coordinates
     /// Coordinate is returned in input image size
-    ofVec2f getImagePoint(int i) const;
+    glm::vec2 getImagePoint(int i) const;
     
     /// Get a list of 2D points with all 68 face landmarks found.
     /// Coordinates are returned in input image size
-    vector<ofVec2f> getImagePoints() const;
+    vector<glm::vec2> getImagePoints() const;
     
     /// Like getImagePoints, just returns the points as cv:Point2f
     vector<cv::Point2f> getCvImagePoints() const;

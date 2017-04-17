@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofConstants.h"
-#include "ofMatrix4x4.h"
+#include "glm/glm.hpp"
 
 #include "ofxCv.h"
 
@@ -12,7 +12,7 @@ public:
     int imageRotation;
     
     // Parameters calculated automatically
-    ofMatrix4x4 rotationMatrix;
+    glm::mat4 rotationMatrix;
     ofxCv::Intrinsics intrinsics;
     
     // Constructor
@@ -26,23 +26,32 @@ public:
     , imageRotation(imageRotation) {
         // Calculate rotation matrix
         if(imageRotation == 90){
-            rotationMatrix.makeIdentityMatrix();
-            rotationMatrix.translate(-landmarkWidth,0,0);
-            rotationMatrix.scale(((float)inputWidth / landmarkHeight), ((float)inputWidth / landmarkHeight), 1);
-            rotationMatrix.rotate(-90, 0,0,1);
+            rotationMatrix = glm::mat4(1.f);
+            rotationMatrix = glm::translate(rotationMatrix, glm::vec3((float)-landmarkWidth, 0.f, 0.f));
+            rotationMatrix = glm::scale(rotationMatrix, glm::vec3((float)inputWidth / landmarkHeight,
+                                                                  (float)inputWidth / landmarkHeight,
+                                                                  1.f));
+            rotationMatrix = glm::rotate(rotationMatrix, -90.f, glm::vec3(0.f, 0.f, 1.f));
         } else if(imageRotation == 270){
-            rotationMatrix.makeIdentityMatrix();
-            rotationMatrix.translate(0, -landmarkHeight,0);
-            rotationMatrix.scale(((float)inputWidth / landmarkHeight), ((float)inputWidth / landmarkHeight), 1);
-            rotationMatrix.rotate(90, 0,0,1);
+            rotationMatrix = glm::mat4(1.f);
+            rotationMatrix = glm::translate(rotationMatrix, glm::vec3(0.f, (float)-landmarkHeight, 0.f));
+            rotationMatrix = glm::scale(rotationMatrix, glm::vec3((float)inputWidth / landmarkHeight,
+                                                                  (float)inputWidth / landmarkHeight,
+                                                                  1.f));
+            rotationMatrix = glm::rotate(rotationMatrix, 90.f, glm::vec3(0.f, 0.f, 1.f));
         } else if(imageRotation == 180){
-            rotationMatrix.makeIdentityMatrix();
-            rotationMatrix.translate(-landmarkWidth, -landmarkHeight,0);
-            rotationMatrix.scale(((float)inputWidth / landmarkWidth), ((float)inputWidth / landmarkWidth), 1);
-            rotationMatrix.rotate(180, 0,0,1);
+            rotationMatrix = glm::mat4(1.f);
+            rotationMatrix = glm::translate(rotationMatrix, glm::vec3((float)-landmarkWidth,
+                                                                      (float)-landmarkHeight, 0.f));
+            rotationMatrix = glm::scale(rotationMatrix, glm::vec3((float)inputWidth / landmarkWidth,
+                                                                  (float)inputWidth / landmarkWidth,
+                                                                  1.f));
+            rotationMatrix = glm::rotate(rotationMatrix, 180.f, glm::vec3(0.f, 0.f, 1.f));
         } else {
-            rotationMatrix.makeIdentityMatrix();
-            rotationMatrix.scale(((float)inputWidth / landmarkWidth), ((float)inputWidth / landmarkWidth), 1);
+            rotationMatrix = glm::mat4(1.f);
+            rotationMatrix = glm::scale(rotationMatrix, glm::vec3((float)inputWidth / landmarkWidth,
+                                                                  (float)inputWidth / landmarkWidth,
+                                                                  1.f));
         }
         
         

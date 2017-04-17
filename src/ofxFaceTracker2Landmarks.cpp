@@ -7,17 +7,16 @@ ofxFaceTracker2Landmarks::ofxFaceTracker2Landmarks(dlib::full_object_detection s
 
 
 
-ofVec2f ofxFaceTracker2Landmarks::getImagePoint(int i) const {
-    ofVec3f p = ofVec3f(shape.part(i).x(),
-                        shape.part(i).y(), 0);
-    p = p * info.rotationMatrix;
+glm::vec2 ofxFaceTracker2Landmarks::getImagePoint(int i) const {
+    glm::vec4 p = glm::vec4(shape.part(i).x(), shape.part(i).y(), 0.f, 1.f);
+    p = info.rotationMatrix * p;
     
-    return ofVec2f(p);
+    return glm::vec2(p.x, p.y);
 }
 
-vector<ofVec2f> ofxFaceTracker2Landmarks::getImagePoints() const {
+vector<glm::vec2> ofxFaceTracker2Landmarks::getImagePoints() const {
     int n = shape.num_parts();
-    vector<ofVec2f> imagePoints(n);
+    vector<glm::vec2> imagePoints(n);
     for(int i = 0; i < n; i++) {
         imagePoints[i] = getImagePoint(i);
     }
@@ -74,7 +73,7 @@ ofPolyline ofxFaceTracker2Landmarks::getFeature(Feature feature, vector<T> point
     vector<int> indices = getFeatureIndices(feature);
     for(int i = 0; i < indices.size(); i++) {
         int cur = indices[i];
-        polyline.addVertex(points[cur]);
+        polyline.addVertex({points[cur].x, points[cur].y, 0.f});
     }
     switch(feature) {
         case LEFT_EYE:
@@ -128,9 +127,9 @@ ofMesh ofxFaceTracker2Landmarks::getMesh(vector<T> points) const {
         // Draw rectangles completely inside the image.
         if ( rect.contains(pt1) && rect.contains(pt2) && rect.contains(pt3))
         {
-            mesh.addVertex(ofxCv::toOf(pt1));
-            mesh.addVertex(ofxCv::toOf(pt2));
-            mesh.addVertex(ofxCv::toOf(pt3));
+            mesh.addVertex({pt1.x, pt1.y, 0.f});
+            mesh.addVertex({pt2.x, pt2.y, 0.f});
+            mesh.addVertex({pt3.x, pt3.y, 0.f});
         }
     }
     return mesh;
