@@ -1,5 +1,5 @@
 #include "ofxFaceTracker2Landmarks.h"
-
+using namespace std;
 
 ofxFaceTracker2Landmarks::ofxFaceTracker2Landmarks(dlib::full_object_detection shape, ofxFaceTracker2InputInfo & info) : shape(shape), info(info){
 }
@@ -74,7 +74,8 @@ ofPolyline ofxFaceTracker2Landmarks::getFeature(Feature feature, vector<T> point
     vector<int> indices = getFeatureIndices(feature);
     for(int i = 0; i < indices.size(); i++) {
         int cur = indices[i];
-        polyline.addVertex(points[cur]);
+        glm::vec2 pt = toGlm(points[cur]);
+        polyline.addVertex(pt.x, pt.y, 0);
     }
     switch(feature) {
         case LEFT_EYE:
@@ -128,9 +129,14 @@ ofMesh ofxFaceTracker2Landmarks::getMesh(vector<T> points) const {
         // Draw rectangles completely inside the image.
         if ( rect.contains(pt1) && rect.contains(pt2) && rect.contains(pt3))
         {
-            mesh.addVertex(ofxCv::toOf(pt1));
-            mesh.addVertex(ofxCv::toOf(pt2));
-            mesh.addVertex(ofxCv::toOf(pt3));
+            glm::vec2 pt1V = ofxCv::toOf(pt1);
+            glm::vec2 pt2V = ofxCv::toOf(pt2);
+            glm::vec2 pt3V = ofxCv::toOf(pt3);
+
+            mesh.addVertex(glm::vec3(pt1V.x, pt1V.y, 0));
+            mesh.addVertex(glm::vec3(pt2V.x, pt2V.y, 0));
+            mesh.addVertex(glm::vec3(pt3V.x, pt3V.y, 0));
+
         }
     }
     return mesh;

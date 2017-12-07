@@ -7,7 +7,7 @@
 #include "../matrix.h"
 #include "structural_svm_problem_threaded.h"
 #include <sstream>
-#include "../string.h"
+#include "dlib/string.h"
 #include "../array.h"
 #include "../image_processing/full_object_detection.h"
 #include "../image_processing/box_overlap_testing.h"

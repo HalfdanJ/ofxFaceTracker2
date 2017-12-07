@@ -29,26 +29,26 @@ public:
     
     /// Get a list of 2D points with all 68 face landmarks found.
     /// Coordinates are returned in input image size
-    vector<ofVec2f> getImagePoints() const;
+    std::vector<ofVec2f> getImagePoints() const;
     
     /// Like getImagePoints, just returns the points as cv:Point2f
-    vector<cv::Point2f> getCvImagePoints() const;
+    std::vector<cv::Point2f> getCvImagePoints() const;
     
     /// Get poly line of a feature
     ofPolyline getImageFeature(Feature feature) const;
     
     ofMesh getImageMesh() const;
     
-    template <class T> ofMesh getMesh(vector<T> points) const;
+    template <class T> ofMesh getMesh(std::vector<T> points) const;
     
 private:
     dlib::full_object_detection shape;
     ofxFaceTracker2InputInfo & info;
     
     static std::vector<int> consecutive(int start, int end);
-    static vector<int> getFeatureIndices(Feature feature);
+    static  std::vector<int> getFeatureIndices(Feature feature);
     
     template <class T>
-    ofPolyline getFeature(Feature feature, vector<T> points) const;
+    ofPolyline getFeature(Feature feature,  std::vector<T> points) const;
     
 };

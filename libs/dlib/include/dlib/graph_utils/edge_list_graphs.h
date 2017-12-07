@@ -6,7 +6,7 @@
 #include "edge_list_graphs_abstract.h"
 #include <limits>
 #include <vector>
-#include "../string.h"
+#include "dlib/string.h"
 #include "../rand.h"
 #include <algorithm>
 #include "sample_pair.h"

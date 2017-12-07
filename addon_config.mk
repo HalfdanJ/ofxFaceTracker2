@@ -70,7 +70,7 @@ common:
 	# a specific platform
 	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/%
 
-	ADDON_INCLUDES = libs/dlib/include
+	ADDON_INCLUDES = libs/dlib/include/
 	ADDON_INCLUDES += src
 
 osx:

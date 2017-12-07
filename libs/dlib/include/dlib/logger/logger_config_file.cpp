@@ -10,7 +10,7 @@
 #include <sstream>
 #include "../error.h"
 #include "../map.h"
-#include "../string.h"
+#include "dlib/string.h"
 
 // ----------------------------------------------------------------------------------------
 

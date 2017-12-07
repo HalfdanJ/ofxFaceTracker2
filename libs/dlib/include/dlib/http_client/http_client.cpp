@@ -1,7 +1,7 @@
 
 
 #include "../sockets.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../logger.h"
 #include "../sockstreambuf.h"
 #include "../timeout.h"

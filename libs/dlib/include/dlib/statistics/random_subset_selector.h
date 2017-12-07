@@ -7,7 +7,7 @@
 #include "../rand.h"
 #include <vector>
 #include "../algs.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../serialize.h"
 #include "../matrix/matrix_mat.h"
 #include <iostream>
