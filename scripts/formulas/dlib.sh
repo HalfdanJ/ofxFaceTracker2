@@ -45,7 +45,6 @@ function build() {
 		cd ../../
 	elif [ "$TYPE" == "android" ] ; then
 		${NDK_ROOT}/ndk-build -j4 NDK_DEBUG=0 NDK_PROJECT_PATH=.
-
 	fi
 }
 # executed inside the lib src dir, first arg $1 is the dest libs dir root
@@ -69,8 +68,10 @@ function copy() {
 	    rm -rf $1/include/dlib/test
 	    rm  $1/include/dlib/all_gui.cpp
 
-	    cp -vr obj/local/armeabi-v7a/libdlib.a $1/lib/android/armeabi-v7a/libdlib.a
-	    cp -vr obj/local/x86/libdlib.a $1/lib/android/x86/libdlib.a
+		mkdir -p $1/lib/android/armeabi-v7a/
+	    cp  obj/local/armeabi-v7a/libdlib.a $1/lib/android/armeabi-v7a/
+		mkdir -p $1/lib/android/x86/
+	    cp  obj/local/x86/libdlib.a $1/lib/android/x86/
 	fi
 }
 
