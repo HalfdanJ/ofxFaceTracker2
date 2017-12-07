@@ -4,7 +4,7 @@
     android:installLocation="preferExternal">
 
     <!-- Add custom permissions here, for example -->
-    <!--<uses-permission android:name="android.permission.CAMERA"/>-->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <!--<uses-permission android:name="android.permission.INTERNET"/>-->
 
     <application
