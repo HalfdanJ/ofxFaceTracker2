@@ -8,7 +8,7 @@
 #include "../array.h"
 #include "../smart_pointers.h"
 #include "../sockstreambuf.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../serialize.h"
 #include "../map.h"
 #include "../ref.h"

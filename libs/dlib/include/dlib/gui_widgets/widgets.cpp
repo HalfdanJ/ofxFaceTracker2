@@ -5,7 +5,7 @@
 
 #include "widgets.h"
 #include <algorithm>
-#include "../string.h"
+#include "dlib/string.h"
 
 namespace dlib
 {

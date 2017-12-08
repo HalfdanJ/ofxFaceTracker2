@@ -21,7 +21,7 @@
 #include "../queue.h"
 #include "../smart_pointers.h"
 #include "style.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../misc_api.h"
 #include <cctype>
 #include <vector>

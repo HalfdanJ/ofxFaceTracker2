@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "dir_nav_extensions_abstract.h"
 #include "../dir_nav.h"
-#include "../string.h"
+#include "dlib/string.h"
 
 namespace dlib
 {

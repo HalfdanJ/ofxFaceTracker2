@@ -12,7 +12,7 @@
 #include "../algs.h"
 #include "../serialize.h"
 #include "../is_kind.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../rand.h"
 
 namespace dlib

@@ -10,7 +10,7 @@
 #include "../compress_stream.h"
 #include "../base64.h"
 #include "../xml_parser.h"
-#include "../string.h"
+#include "dlib/string.h"
 
 // ----------------------------------------------------------------------------------------
 

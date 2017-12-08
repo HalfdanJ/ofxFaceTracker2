@@ -24,7 +24,7 @@ public:
 	ofxFaceTracker2();
     ~ofxFaceTracker2();
 
-    void setup(string dataPath="shape_predictor_68_face_landmarks.dat");
+    void setup(std::string dataPath="shape_predictor_68_face_landmarks.dat");
     
     /// Update the trackers input image
 	bool update(cv::Mat image, cv::Rect roi=cv::Rect(0,0,0,0));
@@ -70,18 +70,18 @@ public:
     /// Set weather the tracker should run threaded or not
     void setThreaded(bool threaded);
     
-    const vector<ofxFaceTracker2Instance> & getInstances() const;
-    vector<ofxFaceTracker2Instance> & getInstances();
+    const std::vector<ofxFaceTracker2Instance> & getInstances() const;
+    std::vector<ofxFaceTracker2Instance> & getInstances();
     
 protected:
-    vector<ofxFaceTracker2Instance> instances;
+    std::vector<ofxFaceTracker2Instance> instances;
     
     ofxCv::Tracker<cv::Rect> faceRectanglesTracker;
     
     void runFaceDetector(bool lockMutex);
     void runLandmarkDetector();
         
-    void updateTrackerInstances(vector<dlib::rectangle> rectangles);
+    void updateTrackerInstances(std::vector<dlib::rectangle> rectangles);
     
     void threadedFunction();
     void rotate_90n(cv::Mat &src, cv::Mat &dst, int angle);

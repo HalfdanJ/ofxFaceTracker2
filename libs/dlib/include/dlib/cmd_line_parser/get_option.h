@@ -4,7 +4,7 @@
 #define DLIB_GET_OPTiON_Hh_
 
 #include "get_option_abstract.h"
-#include "../string.h"
+#include "dlib/string.h"
 #include "../is_kind.h"
 
 namespace dlib

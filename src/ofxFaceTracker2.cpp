@@ -4,6 +4,7 @@
 
 using namespace ofxCv;
 using namespace cv;
+using namespace std;
 
 #define it at<int>
 #define db at<double>
