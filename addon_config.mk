@@ -64,25 +64,33 @@ common:
 
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
-	ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
 
-	# when parsing the file system looking for include paths exclude this for all or
-	# a specific platform
-	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/%
-
+	ADDON_SOURCES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE += libs/dlib/include/%
 	ADDON_INCLUDES = libs/dlib/include/
 	ADDON_INCLUDES += src
 
 osx:
+	ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
+	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/%
 	ADDON_LIBS = libs/dlib/lib/osx/libdlib.a
 
 android/armeabi-v7a:
+	ADDON_SOURCES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE += libs/dlib/include/%
 	ADDON_LIBS = libs/dlib/lib/android/armeabi-v7a/libdlib.a
 
 android/x86:
+	ADDON_SOURCES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/*
+	ADDON_INCLUDES_EXCLUDE += libs/dlib/include/%
 	ADDON_LIBS = libs/dlib/lib/android/x86/libdlib.a
 
 vs:
+	ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
+	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/%
 	ADDON_LIBS = libs/dlib/lib/win/Release/dlib.lib
 
 
