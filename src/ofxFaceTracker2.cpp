@@ -16,6 +16,7 @@ ofxFaceTracker2::ofxFaceTracker2()
 		,imageRotation(0)
 		,numFaces(0)
 		,landmarkDetectorImageSize(-1)
+		,imageDirty(false)
 
 #ifdef TARGET_ANDROID
 		,faceDetectorImageSize(160*120*1.3)
