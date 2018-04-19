@@ -3,24 +3,25 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "Clone.h"
-#include "ofxFaceTracker.h"
-#include "ofxFaceTrackerThreaded.h"
+#include "Coord.h"
+#include "TargetMesh.h"
+#include "ofxFaceTracker2.h"
 
 class ofApp : public ofBaseApp {
 public:
 	void setup();
 	void update();
 	void draw();
-	void dragEvent(ofDragInfo dragInfo);
 	void loadFace(string face);
 	
-	void keyPressed(int key);
 
-	ofxFaceTrackerThreaded camTracker;
 	ofVideoGrabber cam;
-	
-	ofxFaceTracker srcTracker;
+	ofVideoPlayer targetVideoPlayer;
+	ofMesh camMesh;
+	ofxFaceTracker2 srcTracker;
+	ofxFaceTracker2 camTracker;
 	ofImage src;
+	TargetMesh targetMesh;
 	vector<ofVec2f> srcPoints;
 	
 	bool cloneReady;

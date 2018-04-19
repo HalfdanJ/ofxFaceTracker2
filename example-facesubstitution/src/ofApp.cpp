@@ -3,22 +3,18 @@
 using namespace ofxCv;
 
 void ofApp::setup() {
-#ifdef TARGET_OSX
-	//ofSetDataPathRoot("../data/");
-#endif
+	ofSetDataPathRoot("./data");
 	ofSetVerticalSync(true);
-	cloneReady = false;
-	cam.initGrabber(1280, 720);
-	clone.setup(cam.getWidth(), cam.getHeight());
+	cam.setup(1280, 720);
+	clone.setup(1280, 720);
+
+	camTracker.setup();
+	srcTracker.setup();
 	ofFbo::Settings settings;
 	settings.width = cam.getWidth();
 	settings.height = cam.getHeight();
 	maskFbo.allocate(settings);
 	srcFbo.allocate(settings);
-	camTracker.setup();
-	srcTracker.setup();
-	srcTracker.setIterations(25);
-	srcTracker.setAttempts(4);
 
 	faces.allowExt("jpg");
 	faces.allowExt("png");
@@ -32,74 +28,62 @@ void ofApp::setup() {
 void ofApp::update() {
 	cam.update();
 	if(cam.isFrameNew()) {
+		camMesh.clearTexCoords();
 		camTracker.update(toCv(cam));
 		
-		cloneReady = camTracker.getFound();
-		if(cloneReady) {
-			ofMesh camMesh = camTracker.getImageMesh();
-			camMesh.clearTexCoords();
-			camMesh.addTexCoords(srcPoints);
-			
+		vector<ofxFaceTracker2Instance> instances = camTracker.getInstances();
+		if (instances.size() > 0) {
+			ofxFaceTracker2Instance camTarget = instances[0];
+			std::vector<ofVec2f> targetPoints = camTarget.getLandmarks().getImagePoints();
+			targetMesh.update_vertices(targetPoints);
+			targetMesh.update_uvs(srcPoints);
+
 			maskFbo.begin();
 			ofClear(0, 255);
-			camMesh.draw();
+			targetMesh.draw();
 			maskFbo.end();
-			
 			srcFbo.begin();
 			ofClear(0, 255);
 			src.bind();
-			camMesh.draw();
+			targetMesh.draw();
 			src.unbind();
 			srcFbo.end();
-			
-			clone.setStrength(16);
-			clone.update(srcFbo.getTextureReference(), cam.getTextureReference(), maskFbo.getTextureReference());
 		}
+
+		
+		
+		clone.setStrength(16);
+		clone.update(srcFbo.getTextureReference(), cam.getTextureReference(), maskFbo.getTextureReference());
+
 	}
 }
 
 void ofApp::draw() {
 	ofSetColor(255);
 	
-	if(src.getWidth() > 0 && cloneReady) {
+		//cam.draw(0, 0);
+	if(src.getWidth() > 0) {
 		clone.draw(0, 0);
 	} else {
 		cam.draw(0, 0);
 	}
-	
-	if(!camTracker.getFound()) {
-		drawHighlightString("camera face not found", 10, 10);
-	}
-	if(src.getWidth() == 0) {
-		drawHighlightString("drag an image here", 10, 30);
-	} else if(!srcTracker.getFound()) {
-		drawHighlightString("image face not found", 10, 30);
-	}
+
 }
 
 void ofApp::loadFace(string face){
+	ofLog(OF_LOG_NOTICE, "loading"+ofToString(face));
 	src.loadImage(face);
 	if(src.getWidth() > 0) {
-		srcTracker.update(toCv(src));
-		srcPoints = srcTracker.getImagePoints();
-	}
-}
-
-void ofApp::dragEvent(ofDragInfo dragInfo) {
-	loadFace(dragInfo.files[0]);
-}
-
-void ofApp::keyPressed(int key){
-	switch(key){
-	case OF_KEY_UP:
-		currentFace++;
-		break;
-	case OF_KEY_DOWN:
-		currentFace--;
-		break;
-	}
-	currentFace = ofClamp(currentFace,0,faces.size());
-	if(faces.size()!=0){
-		loadFace(faces.getPath(currentFace));
+		while (srcPoints.size() == 0) {
+			srcTracker.update(toCv(src));
+			vector<ofxFaceTracker2Instance>  instances = srcTracker.getInstances();
+			ofLog(OF_LOG_NOTICE, "size f instance"+ofToString(instances.size()));
+			if (instances.size() > 0) {
+				ofxFaceTracker2Instance instance = instances[0];
+				srcPoints = instance.getLandmarks().getImagePoints();
+				targetMesh.update_uvs(srcPoints);
+			}
+			ofLog(OF_LOG_NOTICE, "vector size"+ofToString(srcPoints.size()));
+		}
 	}
 }
