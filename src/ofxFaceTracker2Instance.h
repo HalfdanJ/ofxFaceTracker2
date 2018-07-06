@@ -19,7 +19,7 @@ public:
     int getLabel();
     
     /// Transforms a 3D point in pose coordinate space to 2D point in screen space
-    ofVec2f transformPosePosition(ofVec3f p);
+    glm::vec2 transformPosePosition(glm::vec3 p);
     
     /// Load the pose matrix into OpenGL, this allows you to draw 3D objects in the heads coordinate system
     void loadPoseMatrix();
