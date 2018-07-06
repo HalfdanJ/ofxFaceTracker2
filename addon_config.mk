@@ -92,5 +92,6 @@ vs:
 	ADDON_SOURCES_EXCLUDE = libs/dlib/include/%
 	ADDON_INCLUDES_EXCLUDE = libs/dlib/include/dlib
 	ADDON_LIBS = libs/dlib/lib/win/Release/dlib.lib
+	ADDON_CFLAGS = "/D _USE_MATH_DEFINES"
 
 
