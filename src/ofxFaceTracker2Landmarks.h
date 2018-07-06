@@ -1,6 +1,7 @@
 #pragma once
-#include "ofConstants.h"
-#include "ofGraphics.h"
+//#include "ofConstants.h"
+//#include "ofGraphics.h"
+#include "ofMain.h"
 #include "ofxCv.h"
 
 #include "ofxFaceTracker2InputInfo.h"
@@ -25,11 +26,11 @@ public:
     
     /// Get specific 2D image point from the 68 landmarks coordinates
     /// Coordinate is returned in input image size
-    ofVec2f getImagePoint(int i) const;
+    glm::vec2 getImagePoint(int i) const;
     
     /// Get a list of 2D points with all 68 face landmarks found.
     /// Coordinates are returned in input image size
-    std::vector<ofVec2f> getImagePoints() const;
+    std::vector<glm::vec2> getImagePoints() const;
     
     /// Like getImagePoints, just returns the points as cv:Point2f
     std::vector<cv::Point2f> getCvImagePoints() const;
