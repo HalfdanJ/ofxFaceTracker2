@@ -45,13 +45,13 @@ void ofApp::draw(){
 
         ofPushMatrix();
         ofSetColor(0,255,0,50);
-        ofRotate(-90, 1, 0, 0);
+        ofRotateDeg(-90, 1, 0, 0);
         ofDrawRectangle(0, 0, 200, 200);
         ofPopMatrix();
 
         ofPushMatrix();
         ofSetColor(0,0,255,50);
-        ofRotate(90, 0, 1, 0);
+        ofRotateDeg(90, 0, 1, 0);
         ofDrawRectangle(0, 0, 200, 200);
         ofPopMatrix();
         
