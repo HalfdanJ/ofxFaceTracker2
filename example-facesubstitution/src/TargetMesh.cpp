@@ -129,25 +129,26 @@ TargetMesh::TargetMesh(){
     addTriangle(20,23,22);
 }
 
-void TargetMesh::update_vertices(const std::vector<ofVec2f> &points){
+void TargetMesh::update_vertices(const std::vector<glm::vec2> &points){
     framesUnseen = 0;
     clearVertices();
     int i = 0;
-    for(std::vector<ofVec2f>::const_iterator it = points.begin(); it != points.end(); ++it){
+    for(std::vector<glm::vec2>::const_iterator it = points.begin(); it != points.end(); ++it){
         if(!preloaded){
             positions[i].initialvals(it->x,it->y,0.0f);
         }
-        positions[i].update(*it);
-        ofVec2f pos = positions[i].getEstimation();
-        addVertex(ofVec3f(pos.x,pos.y,0.0f));
-        //addVertex(ofVec3f(it->x,it->y,0.0f)); // direct, without Kalman filter
+        glm::vec3 tempIt = {it->x,it->y,0.0f};
+        positions[i].update(tempIt);
+        glm::vec2 pos = positions[i].getEstimation();
+        addVertex(glm::vec3(pos.x,pos.y,0.0f));
+        //addVertex(glm::vec3(it->x,it->y,0.0f)); // direct, without Kalman filter
         ++i;
     }
 }
 
-void TargetMesh::update_uvs(const std::vector<ofVec2f> &points){
+void TargetMesh::update_uvs(const std::vector<glm::vec2> &points){
     clearTexCoords();
-    for(std::vector<ofVec2f>::const_iterator it = points.begin(); it != points.end(); ++it){
+    for(std::vector<glm::vec2>::const_iterator it = points.begin(); it != points.end(); ++it){
         addTexCoord(*it);
     }
 }

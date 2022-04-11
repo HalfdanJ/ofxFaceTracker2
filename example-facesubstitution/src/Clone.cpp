@@ -92,17 +92,17 @@ void Clone::update(ofTexture& src, ofTexture& dst, ofTexture& mask) {
 	maskedBlur(dst, mask, dstBlur);
 	
 	buffer.begin();
-	ofPushStyle();
-	ofEnableAlphaBlending();
-	dst.draw(0, 0);	
-	cloneShader.begin();
-	cloneShader.setUniformTexture("src", src, 1);
-	cloneShader.setUniformTexture("srcBlur", srcBlur, 2);
-	cloneShader.setUniformTexture("dstBlur", dstBlur, 3);
-	dst.draw(0, 0);
-	cloneShader.end();
-	ofDisableAlphaBlending();
-	ofPopStyle();
+        ofPushStyle();
+        ofEnableAlphaBlending();
+        dst.draw(0, 0);
+        cloneShader.begin();
+            cloneShader.setUniformTexture("src", src, 1);
+            cloneShader.setUniformTexture("srcBlur", srcBlur, 2);
+            cloneShader.setUniformTexture("dstBlur", dstBlur, 3);
+            dst.draw(0, 0);
+        cloneShader.end();
+        ofDisableAlphaBlending();
+        ofPopStyle();
 	buffer.end();
 }
 

@@ -3,13 +3,13 @@
 using namespace ofxCv;
 
 void ofApp::setup() {
-	ofSetDataPathRoot("./data");
+    
 	ofSetVerticalSync(true);
 	cam.setup(1280, 720);
 	clone.setup(1280, 720);
 
-	camTracker.setup();
-	srcTracker.setup();
+	camTracker.setup("model/shape_predictor_68_face_landmarks.dat");
+	srcTracker.setup("model/shape_predictor_68_face_landmarks.dat");
 	ofFbo::Settings settings;
 	settings.width = cam.getWidth();
 	settings.height = cam.getHeight();
@@ -34,7 +34,7 @@ void ofApp::update() {
 		vector<ofxFaceTracker2Instance> instances = camTracker.getInstances();
 		if (instances.size() > 0) {
 			ofxFaceTracker2Instance camTarget = instances[0];
-			std::vector<ofVec2f> targetPoints = camTarget.getLandmarks().getImagePoints();
+			std::vector<glm::vec2> targetPoints = camTarget.getLandmarks().getImagePoints();
 			targetMesh.update_vertices(targetPoints);
 			targetMesh.update_uvs(srcPoints);
 
@@ -63,7 +63,8 @@ void ofApp::draw() {
 	
 		//cam.draw(0, 0);
 	if(src.getWidth() > 0) {
-		clone.draw(0, 0);
+        clone.draw(0, 0);
+
 	} else {
 		cam.draw(0, 0);
 	}

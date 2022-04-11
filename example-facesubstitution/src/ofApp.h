@@ -22,7 +22,7 @@ public:
 	ofxFaceTracker2 camTracker;
 	ofImage src;
 	TargetMesh targetMesh;
-	vector<ofVec2f> srcPoints;
+	vector<glm::vec2> srcPoints;
 	
 	bool cloneReady;
 	Clone clone;

@@ -12,8 +12,8 @@ class TargetMesh : public ofMesh {
         bool preloaded;
     public:
         TargetMesh();
-        void update_vertices(const std::vector<ofVec2f> &points);
-        void update_uvs(const std::vector<ofVec2f> &points);
+        void update_vertices(const std::vector<glm::vec2> &points);
+        void update_uvs(const std::vector<glm::vec2> &points);
         int framesUnseen;
         void render();
 };
